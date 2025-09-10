@@ -109,15 +109,47 @@ class AvacadoPredictor(object):
             ) -> AvacadoPredictorType:
 
         # TODO: complete me!
+            n = len(data)
+            goodToEatCnt = 0
+            countByColor = defaultdict(int)
+            countBySoftness = defaultdict(int)
+            goodToEatByColor = defaultdict(int)
+            goodToEatBySoftness = defaultdict(int)
 
-        return self
+            for color, softness, good_to_eat in data:
+                countByColor[color] += 1
+                countBySoftness[softness] += 1
+                if good_to_eat == GoodToEat.YES:
+                    goodToEatCnt += 1
+                    goodToEatByColor[color] += 1
+                    goodToEatBySoftness[softness] += 1
+            
+            self.good_to_eat_prior[GoodToEat.YES] = goodToEatCnt / n
+            self.good_to_eat_prior[GoodToEat.NO] = 1 - self.good_to_eat_prior[GoodToEat.YES]
+
+
+            
+            for color in Color:
+                self.color_given_good_to_eat_pmf[GoodToEat.YES][color] = goodToEatByColor[color] / goodToEatCnt
+                self.color_given_good_to_eat_pmf[GoodToEat.NO][color] = (countByColor[color] - goodToEatByColor[color]) / (n - goodToEatCnt)
+            
+            for softness in Softness:
+                self.softness_given_good_to_eat_pmf[GoodToEat.YES][softness] = goodToEatBySoftness[softness] / goodToEatCnt
+                self.softness_given_good_to_eat_pmf[GoodToEat.NO][softness] = (countBySoftness[softness] - goodToEatBySoftness[softness]) / (n - goodToEatCnt)
+            return self
 
     def predict_color_proba(self: AvacadoPredictorType,
                             X: List[Color]
                             ) -> List[List[Tuple[GoodToEat, float]]]:
         probs_per_example: List[List[Tuple[GoodToEat, float]]] = list()
-
         # TODO: complete me!
+        
+        for color in X:
+            goodToEatGivenColor = (self.good_to_eat_prior[GoodToEat.YES] * self.color_given_good_to_eat_pmf[GoodToEat.YES][color]) / (
+                self.good_to_eat_prior[GoodToEat.YES] * self.color_given_good_to_eat_pmf[GoodToEat.YES][color] +
+                self.good_to_eat_prior[GoodToEat.NO] * self.color_given_good_to_eat_pmf[GoodToEat.NO][color]
+            )
+            probs_per_example.append([(GoodToEat.YES, goodToEatGivenColor), (GoodToEat.NO, 1 - goodToEatGivenColor)])
 
         return probs_per_example
 
@@ -127,24 +159,33 @@ class AvacadoPredictor(object):
         probs_per_example: List[List[Tuple[GoodToEat, float]]] = list()
 
         # TODO: complete me!
+        for softness in X:
+            goodToEatGivenSoftness = (self.good_to_eat_prior[GoodToEat.YES] * self.softness_given_good_to_eat_pmf[GoodToEat.YES][softness]) / (
+                self.good_to_eat_prior[GoodToEat.YES] * self.softness_given_good_to_eat_pmf[GoodToEat.YES][softness] +
+                self.good_to_eat_prior[GoodToEat.NO] * self.softness_given_good_to_eat_pmf[GoodToEat.NO][softness]
+            )
+            probs_per_example.append([(GoodToEat.YES, goodToEatGivenSoftness), (GoodToEat.NO, 1 - goodToEatGivenSoftness)])
 
         return probs_per_example
 
 
-    """
+
     # EXTRA CREDIT
     def predict_color(self: AvacadoPredictorType,
                       X: List[Color]
                       ) -> List[GoodToEat]:
         # TODO: complete me!
-        return list()
+        probabilities = self.predict_color_proba(X)
+        predictions = [max(prob, key=lambda x: x[1])[0] for prob in probabilities]
+        return predictions
 
     def predict_softness(self: AvacadoPredictorType,
                          X: List[Softness]
                          ) -> List[GoodToEat]:
         # TODO: complete me!
-        return list()
-    """
+        probabilities = self.predict_softness_proba(X)
+        predictions = [max(prob, key=lambda x: x[1])[0] for prob in probabilities]
+        return predictions
 
 
 
@@ -186,9 +227,9 @@ def main() -> None:
     pprint(m.softness_given_good_to_eat_pmf)
 
     # if you do the extra credit be sure to uncomment these lines!
-    # print("accuracy when predicting only on color: ", accuracy(m.predict_color(color_data), good_to_eat_data))
+    print("accuracy when predicting only on color: ", accuracy(m.predict_color(color_data), good_to_eat_data))
 
-    # print("accuracy when predicting only on softness: ", accuracy(m.predict_softness(softness_data), good_to_eat_data))
+    print("accuracy when predicting only on softness: ", accuracy(m.predict_softness(softness_data), good_to_eat_data))
 
 
 if __name__ == "__main__":
