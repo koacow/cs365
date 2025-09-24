@@ -73,9 +73,13 @@ class GMM1D(object):
         # Each row here is a pmf and we calculate these values using bayes rule. This means that we can put the
         # numerator values in gamma, and then normalize every row in gamma to end up with the correct probability values
 
-        # TODO: finish me!
-
+        for i in range(num_examples):
+            for j in range(self.num_gaussians):
+                gammas[i,j] = self.priors[j,0] * pdf(X[i,0], self.mus[j,0], self.variances[j,0])
+        gammas /= (gammas.sum(axis=1, keepdims=True) + EPSILON)
+        assert np.allclose(gammas.sum(axis=1), np.ones((num_examples,), dtype=float)), "ERROR: each row in gammas must sum to 1"
         return gammas
+
 
 
     def mstep(self: GMM1DType,
@@ -85,11 +89,21 @@ class GMM1D(object):
 
         if len(X.shape) != 2:
             raise ValueError("ERROR: X must have shape (num_examples, 1)")
-
         num_examples, _ = X.shape
 
         # TODO: finish me!
+        self.priors = np.mean(gammas, axis=0, keepdims=True).reshape(-1,1)
+        prior_sums = np.sum(self.priors, axis=0)
+        self.priors /= prior_sums
+        assert np.isclose(self.priors.sum(), 1.0), "ERROR: priors must sum to 1 after M-step"
 
+        self.mus = (gammas.T @ X) / (np.sum(gammas, axis=0, keepdims=True).T + EPSILON)
+        self.variances = np.empty((self.num_gaussians, 1), dtype=float)
+        for j in range(self.num_gaussians):
+            squared_diff = (X - self.mus[j,0])**2
+            weighted_diff_squared = gammas[:,j].reshape(-1,1) * squared_diff
+            self.variances[j,0] = np.sum(weighted_diff_squared) / (np.sum(gammas[:,j]) + EPSILON)
+        assert np.all(self.variances > 0.0), "ERROR: variances must be > 0 after M-step"
 
     def em(self: GMM1DType,
            X: np.ndarray
