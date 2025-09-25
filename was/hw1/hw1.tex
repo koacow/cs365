@@ -1,251 +1,140 @@
 \documentclass[11pt]{article}
 
-%\usepackage{geometry}
-\usepackage[paper=a4paper, 
-            left=20.0mm, right=20.0mm, 
-            top=25.0mm, bottom=25.0mm]{geometry}
-\pagestyle{empty}
-\usepackage{graphicx}
-\usepackage{fancyhdr, lastpage, bbding, pmboxdraw}
-\usepackage[usenames,dvipsnames]{color}
-\definecolor{darkblue}{rgb}{0,0,.6}
-\definecolor{darkred}{rgb}{.7,0,0}
-\definecolor{darkgreen}{rgb}{0,.6,0}
-\definecolor{red}{rgb}{.98,0,0}
-\usepackage[colorlinks,pagebackref,pdfusetitle,urlcolor=darkblue,citecolor=darkblue,linkcolor=darkred,bookmarksnumbered,plainpages=false]{hyperref}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage[norelsize, linesnumbered, ruled, lined, boxed, commentsnumbered]{algorithm2e}
+\usepackage{fullpage}
 
-\pagestyle{fancyplain}
-\fancyhf{}
-\lhead{ \fancyplain{}{Course Name} }
-%\chead{ \fancyplain{}{} }
-\rhead{ \fancyplain{}{\today} }
-%\rfoot{\fancyplain{}{page \thepage\ of \pageref{LastPage}}}
-\fancyfoot[RO, LE] {Page \thepage\ of \textcolor{black}{\pageref{LastPage}} }
-\thispagestyle{plain}
+\pdfpagewidth 8.5in
+\pdfpageheight 11in 
 
-%%%%%%%%%%%% LISTING %%%
-\usepackage{listings}
-\usepackage{caption}
-\usepackage{subcaption}
-\DeclareCaptionFont{white}{\color{white}}
-\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
-\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
-\usepackage{verbatim} % used to display code
-\usepackage{fancyvrb}
-\usepackage{acronym}
-\usepackage{amsthm, amsmath}
-\usepackage{tikz}
-    \usetikzlibrary{calc, arrows, arrows.meta, positioning}
+\topmargin 0in
+\oddsidemargin 0in
+\evensidemargin 0in
 
-\VerbatimFootnotes % Required, otherwise verbatim does not work in footnotes!
-
-\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
-\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
-\definecolor{lightlightgray}{gray}{0.93}
-
-\lstset{
-	%language=bash,                          % Code langugage
-	basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
-	keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
-	commentstyle=\color{gray},              % Comments font
-	numbers=left,                           % Line nums position
-	numberstyle=\tiny,                      % Line-numbers fonts
-	stepnumber=1,                           % Step between two line-numbers
-	numbersep=5pt,                          % How far are line-numbers from code
-	backgroundcolor=\color{lightlightgray}, % Choose background color
-	frame=none,                             % A frame around the code
-	tabsize=2,                              % Default tab size
-	captionpos=t,                           % Caption-position = bottom
-	breaklines=true,                        % Automatic line breaking?
-	breakatwhitespace=false,                % Automatic breaks only at whitespace?
-	showspaces=false,                       % Dont make spaces visible
-	showtabs=false,                         % Dont make tabls visible
-	columns=flexible,                       % Column format
-	morekeywords={__global__, __device__},  % CUDA specific keywords
-}
-
-\newcommand{\question}[1]{\section*{\normalsize #1}}
-% \newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
-% \newcommand{\extraspace}[]{
-%     \begin{center}
-%         \textbf{Use this page for extra space.}
-%     \end{center}
-% }
-
-
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
+\newtheorem*{claim}{Claim}
 
 \begin{document}
+
 \begin{center}
-    {\Large \textsc{HW 1}}
+    \textbf{CS365 Written Assignment 1} \\
+    Khoa Cao \\
+    Due 
 \end{center}
-\begin{center}
-    Due: Friday 10/03/2025 @ 11:59pm EST
-\end{center}
 
-\section*{\textbf{Disclaimer}}
-I encourage you to work together, I am a firm believer that we are at our best (and learn better) when we communicate with our peers. Perspective is incredibly important when it comes to solving problems, and sometimes it takes talking to other humans (or rubber ducks in the case of programmers) to gain a perspective we normally would not be able to achieve on our own. The only thing I ask is that you report who you work with: this is \textbf{not} to punish anyone, but instead will help me figure out what topics I need to spend extra time on/who to help. When you turn in your solution (please use some form of typesetting: do \textbf{NOT} turn in handwritten solutions), please note who you worked with.
+\section*{Question 1}
+\begin{proof}
+	First, since we pick the largest number from the $k$ numbers we sampled, if at least one of the $k$ numbers is larger than the median, then the largest number we picked must be larger than the median. \\
+	Since we are sampling without replacement, the number of ways to sample $k$ numbers from $n$ numbers is:
+	\[
+		|S| = {n \choose k}
+	\]
+	The number of numbers, out of the $n$ numbers, that are smaller than or equal to the median is:
+	\[
+		|E| = {\lfloor n/2 \rfloor}
+	\]
+	Note that if $k > \lceil n/2 \rceil$, then we are guaranteed to select a number larger than the median, since there are only $\lfloor n/2 \rfloor$ numbers that are smaller than or equal to the median. \\
+	Let $E$ be the event that all $k$ numbers we examined are smaller than or equal to the median of the $n$ numbers.
+	Then, the probability of us selecting a number larger than the median is:
+	\begin{align*}
+		Pr(E^c) &= 1 - Pr(E) &\text{complement rule} \\
+		&= \begin{cases}
+			1 - \frac{|E|}{|S|} & \text{if } k \leq \lfloor n/2 \rfloor \\
+			1 & \text{if } k > \lceil n/2 \rceil
+		\end{cases} & \text{definition of probability} \\
+		&= \begin{cases}
+			1 - \frac{{\lceil n/2 \rceil \choose k}}{{n \choose k}} & \text{if } k \leq \lceil n/2 \rceil \\
+			1 & \text{if } k > \lceil n/2 \rceil
+		\end{cases} & \text{substituting in } |E| \text{ and } |S| \\
+	\end{align*}
+\end{proof}
+
+\newpage
+
+\section*{Problem 2}
+\begin{proof}
+	Let $X$ be the RV representing the number of successes we get. Then,
+	\begin{align*}
+		X &= \sum_{i=1}^{n} X_i & \text{definition of } X \\
+		X & \sim Binomial (n, p) & \text{since each coin flip is i.i.d. Bernoulli trial} \\
+	\end{align*}
+	Examining $\bar{X}$, the average number of successes, we have:
+	\begin{align*}
+		\bar{X} &= \frac{1}{n} \sum_{i=1}^{n} X_i & \text{definition of } \bar{X} \\
+		&= \frac{1}{n} X & \text{definition of } X \\
+	\end{align*}
+	Using the linearity of expectation, we can compute the expected value of $\bar{X}$:
+	\begin{align*}
+		E(\bar{X}) &= E(\frac{1}{n} X) & \text{definition of } \bar{X} \\
+		&= \frac{1}{n} E(X) & \text{linearity of expectation} \\
+		&= \frac{1}{n} (np) & X \sim Binomial(n, p) \\
+		&= p & \text{simplifying} \\
+	\end{align*}
+	Next, we can compute the variance of $\bar{X}$:
+	\begin{align*}
+		Var(\bar{X}) &= Var(\frac{1}{n} X) & \text{definition of } \bar{X} \\
+		&= \left(\frac{1}{n}\right)^2 Var(X) & \text{property of variance} \\
+		&= \frac{1}{n^2} (np(1-p)) & X \sim Binomial(n, p) \\
+		&= \frac{p(1-p)}{n} & \text{simplifying} \\
+	\end{align*}
+	Using Chebyshev's inequality, we can give an upper bound on how likely the value of $\bar{X}$ differs from the bias of the coin $p$ by at least $\frac{p}{10}$:
+	\begin{align*}
+		Pr(|\bar{X} - E(\bar{X})| \geq \frac{p}{10}) &\leq \frac{Var(\bar{X})}{(p/10)^2} & \text{Chebyshev's inequality} \\
+		\Rightarrow Pr(|\bar{X} - p| \geq \frac{p}{10}) &\leq \frac{Var(\bar{X})}{(p/10)^2} & \text{substituting in } E(\bar{X}) \\
+		&= \frac{\frac{p(1-p)}{n}}{(p/10)^2} & \text{substituting in } Var(\bar{X}) \\
+		&= \frac{100(1-p)}{np} & \text{simplifying} \\
+	\end{align*}
+	Therefore:
+	\[
+		Pr(|\bar{X} - p| \geq \frac{p}{10}) \leq \frac{100(1-p)}{np}
+	\]
+\end{proof}
+
+\newpage
+
+\section*{Problem 3}
+\begin{claim}
+	Let $f$ and $g$ be valid probability distributions defined over the same domain, $S$.
+	Then, the convex combination of $f$ and $g$
+	\[
+		h := \lambda f + (1 - \lambda) g
+	\]
+	for some $lambda \in [0, 1]$ is also a valid probability distribution.
+\end{claim}
+\begin{proof}
+	To show that $h$ is a valid probability distribution, we need to show that:
+	\begin{enumerate}[(i)]
+		\item $h(x) \geq 0 \forall x \in S$
+		\item $\sum_{x \in S} h(x) = 1$
+	\end{enumerate}
+	Since the domains of $f$ and $g$ are the same, $h$ is also defined over the same domain, $S$. \\
+	For (i), we have:
+	\begin{align*}
+		h(x) &= \lambda f(x) + (1 - \lambda) g(x) & \text{definition of } h \\
+		\sum_{x \in S} h(x) &= \sum_{x \in S} \lambda f(x) + (1 - \lambda) g(x) & \text{applying summation} \\
+		&= \sum_{x \in S} \lambda f(x) + \sum_{x \in S} (1 - \lambda) g(x) & \text{linearity of summation} \\
+		&= \lambda \sum_{x \in S} f(x) + (1 - \lambda) \sum_{x \in S} g(x) & \text{linearity of summation} \\
+		&= \lambda (1) + (1 - \lambda) (1) & \text{since } f \text{ and } g \text{ are valid probability distributions} \\
+		&= \lambda + 1 - \lambda & \text{simplifying} \\
+		&= 1 & \text{simplifying} \\
+	\end{align*}
+	Thus, $h$ satisfies (i). \\
+	For (ii), we have:
+	\begin{align*}
+		\lambda f(x) & \geq 0 & \text{since } \lambda \in [0, 1] \text{ and } f(x) \geq 0 \\
+		(1 - \lambda) g(x) & \geq 0 & \text{since } (1 - \lambda) \in [0, 1] \text{ and } g(x) \geq 0 \\
+		\Rightarrow h(x) &= \lambda f(x) + (1 - \lambda) g(x) \geq 0 + 0 & \text{adding the two inequalities} \\
+		&= 0 & \text{simplifying} \\
+	\end{align*}
+	Thus, $h$ satisfies (ii). \\
+	Since $h$ satisfies both (i) and (ii), $h$ is a valid probability distribution.
+\end{proof}
+
+\newpage
+
+\section*{Problem 4}
 
-
-
-\question{Question 1: Monte-Carlo Algorithms (better runtime at the cost of being always correct) (20 points)}
-Consider being a participant on family feud where Steve Harvey has you compete against a person from the rival family. In this setting, Steve Harvey brings you and your opponent to a table with two buzzers and reads out a question. The first person to ring the buzzer gets to answer: if they get the question right, then they earn the opportunity to win points in the game. If they get the question wrong, their opponent earns the opportunity to win points in the game. Suffice to say that having a quick reaction time is important.\newline
-
-\noindent We, being tired and overworked and whatnot, need help in this game. Our reaction time is not what it would be if we were rested and unstressed, so if Steve Harvey finishes the question we are sure to lose the race to hit the buzzer. Being rather clever mathematicians, we devise a rather devious plot: we'll hit the buzzer \textbf{before} the question is fully read. Of course, we run the risk of getting the question wrong because we didn't wait to hear the whole thing, but we are rather confident that if we wait for the entire question to be read, our chance of winning is near zero. Surely its better to take our chances here right?\newline
-
-\noindent In such a scheme, the normal running/processing time is too slow for us: we need something faster. While modeling the correct answer as a function of what words are spoken (and have yet to be spoken) is really complicated, we can instead try to solve a somewhat simpler problem that has similar behaviour.\newline
-
-\noindent Now, rather than playing family feud, let us pretend that you are given $n$ numbers and want to pick one of those numbers. The condition here is that you want to pick a number \textbf{larger} than a median of all $n$ numbers. We could solve this in a few ways, the most efficient being to find the median of all $n$ numbers in linear time, and then perform a linear scan until we find a number larger than the median, which we pick. However, like our family feud scenario, we don't have time to perform a linear scan to calculate the median. Instead, we want to examine only $k$ of these numbers (where $k$ is a constant). After examining all $k$ numbers, we want to pick one of those $k$ numbers as our choice. Let us choose the largest of the $k$ numbers we have examined as our answer. What is the probability that the number we pick is correct (your answer should be a function of $k$)?\newline\newline
-
-\noindent (hint: try to give an upper bound on the probability that our algorithm is wrong first).\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 2: Bounding Probabilistic Events (20 points)}
-You are given a coin with bias $p$. Let us flip the coin $n$ times and observe the outcomes $X_1, X_2, \cdots, X_n$. Let us count the average number of successes $\bar{X} = \frac{1}{n}\sum\limits_{i=1}^n X_i$. Since we are constructing $\bar{X}$ as an empirical average, we know that $0\le \bar{X}\le 1$. What we are interested in is how likely the value of $\bar{X}$ differs from the bias of the coin $p$. Compute an upper bound for the quantity $Pr[|\bar{X} - p| \ge \frac{p}{10}]$ using the Chebyshev inequality. Your answer should be a function of $n$: the number of coin tosses.\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 3: Combining Probability Distributions (20 points)}
-Consider two probability distributions $f$ and $g$, both defined over the same continuous domain. A \textit{convex} combination of two function $f_1$ and $f_2$ creates a third function $f_3$ which is defined as follows:
-$$f_3 := \lambda f_1 + (1-\lambda)f_2$$
-for some value of $0\le \lambda \le 1$. Please show that the convex combination of two probability distributions $f$ and $g$ (mentioned earlier) produces a function that is also a valid probability distribution.\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 4: Expectation Maximization MLE (20 points)}
-Let us say you are clustering $n$ 1-dimensional positive-valued points, and you claim that there are $k=2$ clusters these points are drawn from. Cluster one behaves according to a Geometric distribution $Pr[x_i;p] = (1-p)^{x_i-1}p$ and cluster two behaves according to a Borel distribution $Pr[x_i;\mu]=\frac{e^{-\mu x_i}(\mu x_i)^{x_i-1}}{x_i!}$. So, you choose to use soft-EM which has the machinery to deal with clusters that have pdfs inside them. The function we want to optimize for a our mixture is:
-$$Q = \sum\limits_{i=1}^n\sum\limits_{j=1}^k \gamma_{ij}\Big(\log(\pi_j) + \log(Pr[x_i \textbf{;} \vec{\theta}_j])\Big) \hspace{2cm}\texttt{s.t.} \sum\limits_{j=1}^k \pi_j = 1$$
-where $\vec{\theta}_j$ is the parameters for cluster $j$, $\gamma_{i, j=1}, \gamma_{i, j=2}, \cdots,\gamma_{i, j=k}$ forms a pmf for the \textit{segmentation} of point $x_i$ into the $k=2$ clusters, and $\pi_{j=1}, \pi_{j=2}, \cdots, \pi_{j=k}$ form a prior pmf over the clusters. Derive the MLE estimates for the parameters of each cluster (i.e. derive the MLE estimates for $p^*$ and $\mu^*$)\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 5: MLE Estimates (20 points)}
-In lecture we found the MLE estimate for the Binomial distribution for the event when we know we have $k$ heads. In this question, consider being presented with a dataset $X = \{x_1, x_2, \cdots, x_n\}$ where each $x_i$ is a specific outcome of flipping a coin (with bias $p$) $m$ times. So, each $x_i$ is a string containing $m$ characters where each character either denotes a success or not a success. What is the MLE estimate for $p$ given this dataset?\newpage
-
-
-\question{Extra Credit: Turning a Monte-Carlo Algorithm into a Las-Vegas Algorithm (20 points)}
-IN question 1, we talked about a monte-carlo algorithm for picking a number larger than the median. In this extra credit question we want to repeat this experiment until it succeeds. For instance, lets call our algorithm in question 1 \texttt{pick\_only\_see\_k(pts, k)} where \texttt{pts} is a sequence of $n$ numbers, and $k$ is the number of elements in \texttt{pts} we can examine before picking the largest of the ones we examined. An algorithm is called a monte-carlo algorithm if it can \textit{fail} (i.e. produce the wrong answer). By being wrong sometimes, we can often design algorithms that are much more efficient than if we were to always produce a correct answer. An algorithm that always produces a correct answer is called a las-vegas algorithm. You might think las-vegas algorithms are always better, but consider that when running a las-vegas algorithm, rather than gambling with correctness (like a monte-carlo algorithm does), you are instead gambling with how long it will take (which is why we are interested in big-O notation as it is a worst case estimate).\newline
-
-\noindent In this question, we will design a las-vegas algorithm by using a monte-carlo algorithm as a building block (this is always possible). We will simply run our \texttt{pick\_only\_see\_k(pts, k)} algorithm until it succeeds (there is a little more work to do here but for now let us ignore it). How many times should I expect to have to repeat \texttt{pick\_only\_see\_k(pts, k)} until I get a correct answer? Your answer should be a functin of $k$.
 
 \end{document}
-
