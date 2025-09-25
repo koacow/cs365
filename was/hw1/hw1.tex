@@ -15,6 +15,7 @@
 \evensidemargin 0in
 
 \newtheorem*{claim}{Claim}
+\newcommand{\pd}[1]{\frac{\partial}{\partial #1}}
 
 \begin{document}
 
@@ -135,6 +136,106 @@
 \newpage
 
 \section*{Problem 4}
+To find the MLE for $p^*$ and $\mu^*$, we will optimize the log-likelihood function:
+\[
+	Q = \sum_{i=1}^{n} \sum_{j=1}^{k} \gamma_{ij} \left( \log \pi_j + \log f(x_i; \vec{\theta_j}) \right) \\
+\]
+\[s.t. \sum_{j=1}^{k} \pi_j = 1\]
+Using the Langrangian multiplier method, we have:
+\begin{align*}
+	& \sum_{i=1}^{n} \sum_{j=1}^{k} \gamma_{ij} \left( \log \pi_j + \log f(x_i; \vec{\theta_j}) \right) - \lambda \left( \sum_{j=1}^{k} \pi_j - 1 \right) & \\
+	& \pd{\vec{\theta_w}} \left[ \sum_{i=1}^{n} \sum_{j=1}^{k} \gamma_{ij} \left( \log \pi_j + \log f(x_i; \vec{\theta_j}) \right) - \lambda \left( \sum_{j=1}^{k} \pi_j - 1 \right) \right] = 0 & \text{differentiating w.r.t. } \vec{\theta_w} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \pd{\vec{\theta_w}} \log \left( Pr[x_i | \theta_w] \right) & \text{derived in lecture} \\
+\end{align*}
+For the Geometric distribution, we have:
+\[
+	Pr[x_i | p] = (1 - p)^{x_i - 1} p
+\]
+\begin{align*}
+	& \sum_{i=1}^{n} \gamma_{iw} \pd{\vec{\theta_w}} \log \left( Pr[x_i | \theta_w] \right) & \text{above} \\ 
+	&= \sum_{i=1}^{n} \gamma_{iw} \pd{p} \log \left( (1 - p)^{x_i - 1} p \right) & \text{substituting in } Pr[x_i | p] \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \pd{p} \left( (x_i - 1) \log(1 - p) + \log(p) \right) & \text{log property} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \left( - (x_i - 1) \frac{1}{1 - p} + \frac{1}{p} \right) & \text{differentiating} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \left( \frac{(1 - p) - (x_i - 1)p}{p(1 - p)} \right) & \text{combining the two fractions} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \left( \frac{1 - px_i}{p(1 - p)} \right) & \text{simplifying} \\
+	&= \frac{1}{p(1 - p)} \sum_{i=1}^{n} \gamma_{iw} (1 - px_i) & \text{factoring out } \frac{1}{p(1 - p)} \\
+	& \frac{1}{p(1 - p)} \sum_{i=1}^{n} \gamma_{iw} (1 - px_i) = 0 & \text{setting equal to } 0 \\
+	& \Rightarrow \sum_{i=1}^{n} \gamma_{iw} (1 - px_i) = 0 & \text{multiplying both sides by } p(1 - p) \\
+	& \Rightarrow \sum_{i=1}^{n} \gamma_{iw} - \sum_{i = 1}^{n} \gamma_{iw} px_i = 0 & \text{distributing the summation} \\
+	& \Rightarrow \sum_{i=1}^{n} \gamma_{iw} = p \sum_{i = 1}^{n} \gamma_{iw} x_i & \text{moving the second term to the right side} \\
+	& \Rightarrow p^* = \frac{\sum_{i=1}^{n} \gamma_{iw}}{\sum_{i = 1}^{n} \gamma_{iw} x_i} & \text{dividing both sides by } \sum_{i = 1}^{n} \gamma_{iw} x_i \\
+\end{align*}
 
+For the Borel distribution, we have:
+\[
+	Pr[x_i | \mu] = \frac{e^{-\mu x_i} (\mu x_i)^{x_i - 1}}{x_i!}
+\]
+\begin{align*}
+	& \sum_{i=1}^{n} \gamma_{iw} \pd{\vec{\theta_w}} \log \left( Pr[x_i | \theta_w] \right) & \text{above} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \pd{\mu} \log \left( \frac{e^{-\mu x_i} (\mu x_i)^{x_i - 1}}{x_i!} \right) & \text{substituting in } Pr[x_i | \mu] \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \pd{\mu} \left( -\mu x_i + (x_i - 1) \log(\mu x_i) - \log(x_i!) \right) & \text{log property} \\
+	&= \sum_{i=1}^{n} \gamma_{iw} \left( -x_i + (x_i - 1) \frac{1}{\mu} \right) & \text{differentiating} \\
+	& \sum_{i=1}^{n} \gamma_{iw} \left( -x_i + (x_i - 1) \frac{1}{\mu} \right) & \text{setting equal to } 0 \\
+	&\Rightarrow \sum_{i=1}^{n} \gamma_{iw} (x_i - 1)\frac{1}{\mu} - \sum_{i=1}^{n} \gamma_{iw} x_i = 0 & \text{splitting the summation and rearranging} \\
+	&\Rightarrow \sum_{i=1}^{n} \gamma_{iw} (x_i - 1)\frac{1}{\mu} = \sum_{i=1}^{n} \gamma_{iw} x_i & \text{moving the second term to the right side} \\
+	&\Rightarrow \frac{1}{\mu} = \frac{\sum_{i=1}^{n} \gamma_{iw} x_i}{\sum_{i=1}^{n} \gamma_{iw} (x_i - 1)} & \text{dividing both sides by } \sum_{i=1}^{n} \gamma_{iw} (x_i - 1) \\
+	&\Rightarrow \mu^* = \frac{\sum_{i=1}^{n} \gamma_{iw} (x_i - 1)}{\sum_{i=1}^{n} \gamma_{iw} x_i} & \text{taking the reciprocal of both sides} \\
+\end{align*}
+Therefore, the MLEs are:
+\[
+	p^* = \frac{\sum_{i=1}^{n} \gamma_{iw}}{\sum_{i = 1}^{n} \gamma_{iw} x_i}
+\]
+\[
+	\mu^* = \frac{\sum_{i=1}^{n} \gamma_{iw} (x_i - 1)}{\sum_{i=1}^{n} \gamma_{iw} x_i}
+\]
 
+\newpage
+
+\section*{Problem 5}
+\begin{proof}
+	Let $X$ be the RV representing the total number of successes we get after repeating the experiement $n$ times. Since each coin flip is i.i.d., we have:
+	$X \sim Binomial(N, p)$. \\
+	Here, $N = nm$, since we have $n$ experiements, each with $m$ coin flips. 
+	Let $x_{ij}$ be the outcome of the $j^{th}$ coin flip in the $i^{th}$ experiement, then:
+	\[
+		x_{ij} = \begin{cases}
+			x_{ij} = 1 & \text{if the } j^{th} \text{ coin flip in the } i^{th} \text{ experiement is success} \\
+			x_{ij} = 0 & \text{otherwise}
+		\end{cases}
+	\]
+	\begin{align*}
+		& x_{ij} & \sim Bernoulli(p) & \text{each coin flip is i.i.d. Bernoulli trial} \\
+		&\Rightarrow X_i = \sum_{j=1}^{m} x_ij & \text{definition of } X_i \\
+		&\Rightarrow X_i \sim Binomial(m, p) & \text{since each } x_{ij} \text{ is i.i.d. Bernoulli trial} \\
+		&\Rightarrow X = \sum_{i=1}^{n} X_i & \text{definition of } X \\
+		&\Rightarrow X = \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij} & \text{substituting in } X_i \\
+		&\Rightarrow X  \sim Binomial(nm, p) & \text{since each } X_i \text{ is i.i.d. Binomial trial} \\
+	\end{align*}
+	Let $k$ be the total number of successes we observed:
+	\[
+	k = \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}
+	\]
+	Then, we can use the likelihood function to derive the MLE for $p$:
+	\begin{align*}
+		\mathcal{L}(p) &= Pr[X = k | p] & \text{definition of likelihood function} \\
+		&= {nm \choose k} p^k (1 - p)^{nm - k} & X \sim Binomial(nm, p) \\
+		\mathcal{L}\mathcal{L}(p) &= \log \left( {nm \choose k} p^k (1 - p)^{nm - k} \right) & \text{taking the log of the likelihood function} \\
+		&= \log \left( {nm \choose k} \right) + k \log(p) + (nm - k) \log(1 - p) & \text{log property} \\
+		\pd{p} \mathcal{L}\mathcal{L}(p) &= \pd{p} \left[ \log \left( {nm \choose k} \right) + k \log(p) + (nm - k) \log(1 - p) \right] & \text{differentiating} \\
+		&= 0 + k \frac{1}{p} - (nm - k) \frac{1}{1 - p} & \text{differentiating} \\
+		&= k \frac{1}{p} - (nm - k) \frac{1}{1 - p} & \text{simplifying} \\
+		& k \frac{1}{p} - (nm - k) \frac{1}{1 - p} = 0 & \text{setting equal to } 0 \\
+		&\Rightarrow \frac{k}{p} = \frac{nm - k}{1 - p} & \text{moving the second term to the right side} \\
+		&\Rightarrow \frac{1 - p}{p} = \frac{nm - k}{k} & \text{cross-multiplying} \\
+		&\Rightarrow \frac{1}{p} - 1 = \frac{nm - k}{k} & \text{rewriting the left side} \\
+		&\Rightarrow \frac{1}{p} = \frac{nm - k}{k} + 1 & \text{adding } 1 \text{ to both sides} \\
+		&\Rightarrow \frac{1}{p} = \frac{nm}{k} & \text{combining the right side} \\
+		&\Rightarrow p^* = \frac{k}{nm} & \text{taking the reciprocal of both sides} \\
+	\end{align*}
+	Therefore, the MLE for $p$ is:
+	\[
+		p^* = \frac{k}{nm}
+	\]
+	where $k$ is the total number of successes we observed after repeating the experiement $n$ times, each with $m$ coin flips.
+\end{proof}
 \end{document}
