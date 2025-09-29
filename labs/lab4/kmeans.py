@@ -140,7 +140,12 @@ class KMeans(object):
         cluster_idx_assignments: np.ndarray = np.empty((num_examples, 1), dtype=int)
 
         # TODO: finish me!
-
+        for example_idx in range(num_examples):
+            distances = np.linalg.norm(self.cluster_centers - X[example_idx, :].reshape(1, -1), ord=2, axis=1)**2
+            assert distances.shape == (self.num_clusters,), f"expected distances to have shape ({self.num_clusters},) but got {distances.shape}"
+            assert np.isfinite(distances).all(), f"expected all distances to be finite but got {distances}"
+            assert (distances >= 0).all(), f"expected all distances to be non-negative but got {distances}"
+            cluster_idx_assignments[example_idx, 0] = np.argmin(distances)
         return cluster_idx_assignments
 
 
@@ -154,6 +159,16 @@ class KMeans(object):
         # In the m-step we use the cluster_idx_assignments to recalculate each cluster center to be the mean of the points that were assigned to it
         # edge case: if no points were assigned to a cluster (this is possible), then do not change that cluster
         # TODO: finish me!
+        unchanged_cluster_center_idxs = []
+        new_cluster_centers = np.copy(self.cluster_centers)
+        for cluster_idx in range(self.num_clusters):
+            assigned_points = X[cluster_idx_assignments.reshape(-1) == cluster_idx, :]
+            if assigned_points.shape == (0, X.shape[1]):
+                unchanged_cluster_center_idxs.append(cluster_idx)
+                continue
+            new_cluster_centers[cluster_idx, :] = assigned_points.mean(axis=0)
+        assert len(unchanged_cluster_center_idxs) < self.num_clusters, "expected at least one cluster to have points assigned to it"
+        self.cluster_centers = new_cluster_centers
         
 
     def em(self: KMeansType,
