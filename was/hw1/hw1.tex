@@ -28,28 +28,24 @@
 \section*{Question 1}
 \begin{proof}
 	First, since we pick the largest number from the $k$ numbers we sampled, if at least one of the $k$ numbers is larger than the median, then the largest number we picked must be larger than the median. \\
-	Since we are sampling without replacement, the number of ways to sample $k$ numbers from $n$ numbers is:
+	Let $E$ be the event that all $k$ numbers we examined are smaller than or equal to the median of the $n$ numbers. 
+	Then, the complement of $E$, denoted $E^c$, is the event that at least one of the $k$ numbers we examined is larger than the median. \\
+	Since there are $\lceil n/2 \rceil$ numbers that are smaller than or equal to the median, the probability that any single number we randomly select is smaller than or equal to the median is:
 	\[
-		|S| = {n \choose k}
+		\frac{1}{2}
 	\]
-	The number of numbers, out of the $n$ numbers, that are smaller than or equal to the median is:
-	\[
-		|E| = {\lfloor n/2 \rfloor}
-	\]
-	Note that if $k > \lceil n/2 \rceil$, then we are guaranteed to select a number larger than the median, since there are only $\lfloor n/2 \rfloor$ numbers that are smaller than or equal to the median. \\
-	Let $E$ be the event that all $k$ numbers we examined are smaller than or equal to the median of the $n$ numbers.
-	Then, the probability of us selecting a number larger than the median is:
+	Then, we can give a bound on the probability of $E$ and $E^c$:
 	\begin{align*}
-		Pr(E^c) &= 1 - Pr(E) &\text{complement rule} \\
-		&= \begin{cases}
-			1 - \frac{|E|}{|S|} & \text{if } k \leq \lfloor n/2 \rfloor \\
-			1 & \text{if } k > \lceil n/2 \rceil
-		\end{cases} & \text{definition of probability} \\
-		&= \begin{cases}
-			1 - \frac{{\lceil n/2 \rceil \choose k}}{{n \choose k}} & \text{if } k \leq \lceil n/2 \rceil \\
-			1 & \text{if } k > \lceil n/2 \rceil
-		\end{cases} & \text{substituting in } |E| \text{ and } |S| \\
+		Pr(E) &= \left(\frac{\lceil n/2 \rceil}{n}\right) \left(\frac{\lceil n/2 \rceil - 1}{n}\right) \ldots \left(\frac{\lceil n/2 \rceil - k}{n}\right) & \text{sampling with replacement} \\
+		& \leq \left( \frac{1}{2} \right)^k & \text{upper bound on the expression above} \\
+		\Rightarrow Pr(E) &\leq \left( \frac{1}{2} \right)^k &  \\
+		\Rightarrow Pr(E^c) &= 1 - Pr(E) \geq 1 - \left( \frac{1}{2} \right)^k & \text{complement rule} \\
+		Pr(E^c) &\geq \frac{2^k - 1}{2^k} & \text{simplifying} \\
 	\end{align*}
+	Therefore, the probability that the largest number we picked is larger than the median of the $n$ numbers is at least:
+	\[
+		\frac{2^k - 1}{2^k}
+	\]
 \end{proof}
 
 \newpage
@@ -237,5 +233,31 @@ Therefore, the MLEs are:
 		p^* = \frac{k}{nm}
 	\]
 	where $k$ is the total number of successes we observed after repeating the experiement $n$ times, each with $m$ coin flips.
+\end{proof}
+
+\newpage
+
+\section*{Extra Credit}
+\begin{proof}
+	Suppose we use our Monte-carlo algorithm from Problem 1, \texttt{pick\_only\_see\_k(pts, k)} to find the median of $n$ numbers by repeatedly sampling $k$ numbers and picking the largest number from the $k$ numbers we sampled. 
+	We found that the probability we sample a number larger than the median of the $n$ numbers is at least:
+	\[
+		\frac{2^k - 1}{2^k}
+	\]
+	Let $X$ be the RV representing the number of times we have to repeat the sampling process until we pick a number larger than the median. 
+	Then,
+	\[
+		X \sim Geometric(p)
+	\]
+	where $p$ is the probability of success with each call of \texttt{pick\_only\_see\_k(pts, k)}.
+	The amount of times we are expected to call \texttt{pick\_only\_see\_k(pts, k)} is:
+	\begin{align*}
+		E(X) &= \frac{1}{p} & X \sim Geometric(p) \\
+		p &\geq \frac{2^k - 1}{2^k} & \text{from problem 1} \\
+		\Rightarrow \frac{1}{p} &\leq \frac{1}{\frac{2^k - 1}{2^k}} & \text{taking the reciprocal of both sides} \\
+		\Rightarrow E(X) &\leq \frac{1}{\frac{2^k - 1}{2^k}} & \text{substituting in } E(X) \\
+		\Rightarrow E(X) &\leq \frac{2^k}{2^k - 1} & \text{simplifying} \\
+	\end{align*}
+	Therefore, the expected number of times we have to call \texttt{pick\_only\_see\_k(pts, k)} until we pick a number larger than the median is at most $\frac{2^k}{2^k - 1}$.
 \end{proof}
 \end{document}
