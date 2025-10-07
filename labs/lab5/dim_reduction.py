@@ -57,6 +57,11 @@ def randomly_project(X: np.ndarray,                     # the original dataset
     check_2d(X)
 
     # TODO: complete me!
+    d = X.shape[1]
+    # Fill A with random values from N(0, 1)
+    A = np.random.normal(0, 1, (k, d)) * np.sqrt(1 / k)
+    X_hat = X @ A.T
+    return A, X_hat
 
 
 def check_if_distance_satisfied(X: np.ndarray,          # the original dataset
@@ -69,6 +74,15 @@ def check_if_distance_satisfied(X: np.ndarray,          # the original dataset
     check_2d(X_reduced)
     check_same_num_examples(X, X_reduced)
 
+    n = X.shape[0]
+    for i in range(n):
+        for j in range(i + 1, n):
+            original_distance = np.linalg.norm(X[i] - X[j])
+            reduced_distance = np.linalg.norm(X_reduced[i] - X_reduced[j])
+            if (1 - epsilon) * original_distance > reduced_distance or reduced_distance > (1 + epsilon) * original_distance:
+                return False
+    return True
+
     # TODO: complete me!
 
 
@@ -80,8 +94,14 @@ def reduce_dims_randomly(X: np.ndarray,                 # the original dataset
     #   (f, X_reduced, num_iterations)
 
     # TODO: complete me!
-    ...
-
+    num_iters = 0
+    done = False
+    while not done:
+        A, X_hat = randomly_project(X, k)
+        done = check_if_distance_satisfied(X, X_hat, epsilon)
+        num_iters += 1
+    return A, X_hat, num_iters
+    
 
 def main() -> None:
     X_class_0, X_class_1 = load_data()
