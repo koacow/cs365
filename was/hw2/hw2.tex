@@ -1,0 +1,204 @@
+\documentclass[11pt]{article}
+
+%\usepackage{geometry}
+\usepackage[paper=a4paper, 
+            left=20.0mm, right=20.0mm, 
+            top=25.0mm, bottom=25.0mm]{geometry}
+\pagestyle{empty}
+\usepackage{graphicx}
+\usepackage{fancyhdr, lastpage, bbding, pmboxdraw}
+\usepackage[usenames,dvipsnames]{color}
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.7,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+\usepackage[colorlinks,pagebackref,pdfusetitle,urlcolor=darkblue,citecolor=darkblue,linkcolor=darkred,bookmarksnumbered,plainpages=false]{hyperref}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\pagestyle{fancyplain}
+\fancyhf{}
+\lhead{ \fancyplain{}{CS365: Foundations of Data Science} }
+%\chead{ \fancyplain{}{} }
+\rhead{ \fancyplain{}{\today} }
+%\rfoot{\fancyplain{}{page \thepage\ of \pageref{LastPage}}}
+\fancyfoot[RO, LE] {Page \thepage\ of \textcolor{black}{\pageref{LastPage}} }
+\thispagestyle{plain}
+
+%%%%%%%%%%%% LISTING %%%
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\usepackage{verbatim} % used to display code
+\usepackage{fancyvrb}
+\usepackage{acronym}
+\usepackage{amsthm, amsmath, amssymb}
+\usepackage{tikz}
+    \usetikzlibrary{calc, arrows, arrows.meta, positioning}
+
+\VerbatimFootnotes % Required, otherwise verbatim does not work in footnotes!
+
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{lightlightgray}{gray}{0.93}
+
+\lstset{
+	%language=bash,                          % Code langugage
+	basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
+	keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
+	commentstyle=\color{gray},              % Comments font
+	numbers=left,                           % Line nums position
+	numberstyle=\tiny,                      % Line-numbers fonts
+	stepnumber=1,                           % Step between two line-numbers
+	numbersep=5pt,                          % How far are line-numbers from code
+	backgroundcolor=\color{lightlightgray}, % Choose background color
+	frame=none,                             % A frame around the code
+	tabsize=2,                              % Default tab size
+	captionpos=t,                           % Caption-position = bottom
+	breaklines=true,                        % Automatic line breaking?
+	breakatwhitespace=false,                % Automatic breaks only at whitespace?
+	showspaces=false,                       % Dont make spaces visible
+	showtabs=false,                         % Dont make tabls visible
+	columns=flexible,                       % Column format
+	morekeywords={__global__, __device__},  % CUDA specific keywords
+}
+
+\newcommand{\question}[1]{\section*{\normalsize #1}}
+% \newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+% \newcommand{\extraspace}[]{
+%     \begin{center}
+%         \textbf{Use this page for extra space.}
+%     \end{center}
+% }
+
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+\begin{document}
+\begin{center}
+    {\Large \textsc{HW 2}}
+\end{center}
+\begin{center}
+    Due: Friday 10/24/2025 @ 11:59pm EST
+\end{center}
+
+\section*{\textbf{Disclaimer}}
+I encourage you to work together, I am a firm believer that we are at our best (and learn better) when we communicate with our peers. Perspective is incredibly important when it comes to solving problems, and sometimes it takes talking to other humans (or rubber ducks in the case of programmers) to gain a perspective we normally would not be able to achieve on our own. The only thing I ask is that you report who you work with: this is \textbf{not} to punish anyone, but instead will help me figure out what topics I need to spend extra time on/who to help. When you turn in your solution (please use some form of typesetting: do \textbf{NOT} turn in handwritten solutions), please note who you worked with.
+
+
+
+
+
+
+
+
+\question{Question 1: Matrix Derivatives (30 points)}
+Differentiating scalars is great, but what happens if our objective function is written using linear algebra? The objective may still be differentiable, and so to optimize it we would still need to differentiate it. But how can you differentiate linear algebra equations? In this question you will be deriving some of the derivative rules for matrix equations.\newline
+
+\noindent Remember that matrix equations are used to group together lots of smaller, scalar equations. Differentiation also follows a similar rule: until you know the matrix derivative rules as well as the scalar ones, the procedure for differentiating a matrix equation is as follows:
+\begin{enumerate}
+    \item expand the matrix equation into its scalar form. This equation may be huge and will probably involve lots of summations.
+    \item differentiate the giant scalar equation.
+    \item repackage the giant derivative equation back into matrix form.
+\end{enumerate}
+Please follow this procedure to derive the matrix derivative rules for the following matrix equations:
+\begin{enumerate}
+    \item \texttt{(6 points)} $\dfrac{\partial \textbf{AB}}{\partial \textbf{A}}$
+    \item \texttt{(6 points)} $\dfrac{\partial \textbf{AB}}{\partial \textbf{B}}$
+    \item \texttt{(6 points)} $\dfrac{\partial ||\vec{x}||_p^p}{\partial \vec{x}}$
+    \item \texttt{(6 points)} $\dfrac{\partial \vec{x}^T \textbf{A}\vec{x}}{\partial \vec{x}}$
+    \item \texttt{(6 points)} $\dfrac{\partial \vec{x}^T\textbf{A}\vec{x}}{\partial \textbf{A}}$
+\end{enumerate}\newpage
+
+
+
+
+
+
+
+
+\question{Question 2: Multivariate Gaussian Mixture Models (35 points)}
+A Gaussian mixture model is a instance of a very specific application of expectation maximization. The probelm in lecture we've been applying expectation maximization to has been placing examples into exactly one of $k$ distinct buckets, where each bucket is controlled with a (potentially different shape from the others) probability distribution. A Gaussian mixture model makes a further assumption to this problem: it assumes that every bucket is controlled by a separate gaussian distribution. The pdf for a 1-dimensional gaussian is:
+
+$$Pr[x ; \mu, \sigma^2] = \frac{e^{\frac{-(x-\mu)^2}{2\sigma^2}}}{\sqrt{2\pi \sigma^2}}$$
+
+\noindent In your labs you have solved this problem for a 1-dimensional gaussian distribution by first deriving the log-likelihood of a set of samples (denoted as $X$) as:
+$$\mathcal{LL}(X,Z;\theta, \pi) = \sum\limits_{x_i\in X} \sum\limits_{j=1}^k z_{ij}\Big(\log(\pi_j) + \log(Pr[x_i;\mu_j,\sigma^2_j])\Big)$$
+
+\noindent and then deriving:
+
+$$Q(X;\theta,\pi) := \mathop{\mathbb{E}}\limits_{Z}[\mathcal{LL}(X,Z;\theta,\pi)] = \sum\limits_{x_i\in X} \sum\limits_{j=1}^k Pr[z_{ij}=1|x_i]\Big(\log(\pi_j) + \log(Pr[x_i;\mu_j,\sigma^2_j])\Big)$$
+
+\noindent In lecture we already applied the e-step of expectation maximization to maximize $Q$ for the alignment (i.e. maximizing $Pr[z_{ij}=1|x_i]$. The solution was to calculate:
+
+$$\forall x_i\in X,\forall j\in [k]\hspace{1cm}\gamma_{ij} = \frac{Pr[x_i;\mu_j,\sigma^2_j]\pi_j}{\sum\limits_{m=1}Pr[x_i;\mu_m,\sigma^2_m]\pi_m}$$
+
+\noindent After plugging this solution back into $Q$, we arrived at the m-step of expecation maximization where we needed to figure out $\pi$ and $\mu, \sigma^2$ for every cluster. We took our modified $Q$:
+
+$$Q(X;\theta,\pi) = \sum\limits_{x_i\in X} \sum\limits_{j=1}^k \gamma_{ij}\Big(\log(\pi_j) + \log(Pr[x_i;\mu_j,\sigma^2_j])\Big) \hspace{1cm} \text{s.t.} \sum\limits_{j=1}^k \pi_j = 1$$
+
+\noindent found the equations for $\frac{\partial Q}{\partial \pi_m}, \frac{\partial Q}{\partial \mu_m}, \frac{\partial Q}{\partial \sigma^2_m}$, set them equal to zero and solved. We arrived at the following solutions:
+
+\begin{align*}
+    \pi^{*}_m &= \frac{1}{n}\sum\limits_{x_i\in X} \gamma_{im}\\
+    \mu^{*}_m &= \frac{\sum\limits_{x_i\in X}\gamma_{im}x_i}{\sum\limits_{x_i\in X}\gamma_{im}}\\
+    (\sigma^2)^{*}_m &= \frac{\sum\limits_{x_i\in X}\gamma_{im}(x_i-\mu^{*}_m)^2}{\sum\limits_{x_i\in X}\gamma_{im}}
+\end{align*}
+
+
+\noindent In this question, what if each sample is \textbf{multi-dimensional} instead of a scalar? In this case each sample becomes a \textbf{vector} in $d$-dimensional space and will be denoted as $\vec{x}$. Gaussian exist for multi-dimensional samples, but the pdf changes to now have a mean vector $\vec{\mu}$ and a covariance matrix $\mathbf{\Sigma}$. The new pdf looks like:
+
+$$Pr[\vec{x} ; \vec{\mu}, \mathbf{\Sigma}] = \frac{e^{-\frac{1}{2}(\vec{x}-\vec{\mu})^{T}\mathbf{\Sigma}^{-1}(\vec{x}-\vec{\mu})}}{\sqrt{(2\pi)^{k} |\mathbf{\Sigma}|}}$$
+
+\noindent where $\Sigma^{-1}$ is the inverse, $|\Sigma|$ is the determinant of covariance matrix $\mathbf{\Sigma}$, and $k$ is the dimensionality of $\vec{x}$. Most of the math stays the same ($\gamma_{ij}$ and $\pi^{*}_m$ stay the same) and we arrive at the following $Q$:
+
+$$Q(X;\theta,\pi) = \sum\limits_{\vec{x}_i\in X} \sum\limits_{j=1}^k \gamma_{ij}\Big(\log(\pi_j) + \log(Pr[\vec{x}_i;\vec{\mu}_j,\Sigma_j])\Big) \hspace{1cm} \text{s.t.} \sum\limits_{j=1}^k \pi_j = 1$$
+
+\noindent Please find the MLE estimates for:
+\begin{enumerate}
+    \item \texttt{(15 points)} $\vec{\mu}^{*}_m$
+    \item \texttt{(20 points)} $\mathbf{\Sigma}^{*}_m$
+\end{enumerate}
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+\question{Question 3: Singular Value Decomposition) (35 points)}
+Consider matrix $\textbf{A}$ and its svd:
+$$\textbf{A} = \textbf{U}\Sigma\textbf{V}^T$$
+\begin{enumerate}
+    \item \texttt{(15 points)} Show that for a square, symmetric matrix $\textbf{M}$, any two eigenvectors $\vec{v}_1, \vec{v}_2$ with distinct eigenvalues $\lambda_1, \lambda_2$ are orthogonal (i.e. the inner product $\langle \vec{v}_1, \vec{v}_2\rangle$ is 0). You will need the following lemma:
+$$\text{for any matrix }\textbf{M}\text{ and vectors }\vec{v}, \vec{w}, \langle \textbf{M}\vec{v}, \vec{w}\rangle = \langle \vec{v}, \textbf{M}^T\vec{w}\rangle$$
+
+
+    \item \texttt{(10 points)} Show that $\textbf{A}\textbf{A}^T$ and $\textbf{A}^T\textbf{A}$ are symmetric.
+
+    \item \texttt{(5 points)} Derive an expression that relates singular vectors and singular values of $\textbf{A}$ to the eigenvectors and eigenvalues of $\textbf{A}\textbf{A}^T$
+
+
+    \item \texttt{(5 points)} Derive an expression that relates singular vectors and singular values of $\textbf{A}$ to the eigenvectors and eigenvalues of $\textbf{A}^T\textbf{A}$
+\end{enumerate}
+\newpage
+
+
+
+
+
+\question{Extra Credit: Las-Vegas Johnson-Lindenstrauss (25 points)}
+In lecture we talked about the Johnson-Lindenstrauss lemma and how it gives us a Monte-Carlo algorithm for dimensionality reduction. In lab we converted the Monte-Carlo Johnson-Lindenstrauss algorithm into a Las-Vegas algorithm by running the Monte-Carlo version until it succeeded. Derive an expression on the expected number of iterations that the Las-Vegas Johnson-Lindenstrauss algorithm will need to execute before it terminates.
+
+
+\end{document}
+
