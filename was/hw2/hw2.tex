@@ -35,8 +35,70 @@
     Differentiating w.r.t. $A_{lp}$ gives:
     \begin{align*}
         \pd{X_{ij}}{A_{lp}} &= \pd{(\sum_{k=1}^{n} A_{ik} \cdot B_{kj})}{A_{lp}} & \text{from previous result} \\
+        &= \begin{cases}
+            B_{pj} & \text{if } i = l \text{ and } k = p \\
+            0 & \text{otherwise}
+        \end{cases} \\
+        \Rightarrow \pd{\textbf{X}}{A_{lp}} &= \begin{bmatrix}
+            0 & \cdots & 0 & \cdots & 0 \\
+            \vdots & \ddots & \vdots & & \vdots \\
+            B_{p1} & \cdots & B_{pj} & \cdots & B_{pn} \\
+            \vdots & & \vdots & \ddots & \vdots \\
+            0 & \cdots & 0 & \cdots & 0
+        \end{bmatrix} & \text{writing derivative in matrix form} \\
+        \Rightarrow \pd{\textbf{X}}{\textbf{A}} &= \begin{bmatrix}
+            \pd{\textbf{X}}{A_{11}} & \pd{\textbf{X}}{A_{12}} & \cdots & \pd{\textbf{X}}{A_{1n}} \\
+            \pd{\textbf{X}}{A_{21}} & \pd{\textbf{X}}{A_{22}} & \cdots & \pd{\textbf{X}}{A_{2n}} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            \pd{\textbf{X}}{A_{m1}} & \pd{\textbf{X}}{A_{m2}} & \cdots & \pd{\textbf{X}}{A_{mn}}
+        \end{bmatrix} & \text{writing derivative in matrix form} \\
+        &= \begin{bmatrix}
+            \begin{bmatrix}
+                0 & \cdots & 0 & \cdots & 0 \\
+                \vdots & \ddots & \vdots & & \vdots \\
+                B_{11} & \cdots & B_{1j} & \cdots & B_{1n} \\
+                \vdots & & \vdots & \ddots & \vdots \\
+                0 & \cdots & 0 & \cdots & 0
+            \end{bmatrix} & \cdots \\
+            \vdots & \ddots \\
+        \end{bmatrix} & \text{substituting previous result} \\
     \end{align*}
-    \item TODO
+    \item Let $\textbf{X} = \textbf{AB}$ where $\textbf{A} \in \mathbb{R}^{m \times n}$ and $\textbf{B} \in \mathbb{R}^{n \times p}$. Let $\vec{a_i}$ be the $i^{th}$ row of $\textbf{A}$ and $\vec{b_j}$ be the $j^{th}$ column of $\textbf{B}$. Then, the $ij^{th}$ entry of $\textbf{X}$ is given by
+    \begin{align*}
+        X_{ij} &= \vec{a_i} \cdot \vec{b_j} & \text{definition of matrix multiplication} \\
+        X_{ij} &= \sum_{k=1}^{n} A_{ik} \cdot B_{kj} & \text{definition of dot product}
+    \end{align*}
+    Differentiating w.r.t. $B_{lp}$ gives:
+    \begin{align*}
+        \pd{X_{ij}}{B_{lp}} &= \pd{(\sum_{k=1}^{n} A_{ik} \cdot B_{kj})}{B_{lp}} & \text{from previous result} \\
+        &= \begin{cases}
+            A_{il} & \text{if } k = l \text{ and } j = p \\
+            0 & \text{otherwise}
+        \end{cases} \\
+        \Rightarrow \pd{\textbf{X}}{B_{lp}} &= \begin{bmatrix}
+            0 & \cdots & A_{1l} & \cdots & 0 \\
+            \vdots & \ddots & \vdots & & \vdots \\
+            0 & \cdots & A_{il} & \cdots & 0 \\
+            \vdots & \ddots & \vdots & & \vdots \\
+            0 & \cdots & A_{ml} & \cdots & 0 \\
+        \end{bmatrix} & \text{writing derivative in matrix form} \\
+        \Rightarrow \pd{\textbf{X}}{\textbf{A}} &= \begin{bmatrix}
+            \pd{\textbf{X}}{B_{11}} & \pd{\textbf{X}}{B_{12}} & \cdots & \pd{\textbf{X}}{B_{1n}} \\
+            \pd{\textbf{X}}{B_{21}} & \pd{\textbf{X}}{B_{22}} & \cdots & \pd{\textbf{X}}{B_{2n}} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            \pd{\textbf{X}}{B_{m1}} & \pd{\textbf{X}}{B_{m2}} & \cdots & \pd{\textbf{X}}{B_{mn}}
+        \end{bmatrix} & \text{writing derivative in matrix form} \\
+        &= \begin{bmatrix}
+            \begin{bmatrix}
+                0 & \cdots & A_{11} & \cdots & 0 \\
+                \vdots & \ddots & \vdots & & \vdots \\
+                0 & \cdots & A_{i1} & \cdots & 0 \\
+                \vdots & \ddots & \vdots & & \vdots \\
+                0 & \cdots & A_{m1} & \cdots & 0 \\
+            \end{bmatrix} & \cdots \\
+            \vdots & \ddots \\
+        \end{bmatrix} & \text{substituting previous result} \\
+    \end{align*}
     \item First, we find the scalar equation for the $L_p$ norm of $\vec{x}$.
     \begin{align*}
         ||\vec{x}||_p^p &= \left[ \left(\sum_{i=1}^{n} |x_i|^p \right)^{\frac{1}{p}} \right]^p & \text{definition of } L_p \text{ norm} \\
