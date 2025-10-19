@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[11pt, fleqn]{article}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -6,6 +6,7 @@
 \usepackage{enumerate}
 \usepackage[norelsize, linesnumbered, ruled, lined, boxed, commentsnumbered]{algorithm2e}
 \usepackage{fullpage}
+
 
 \pdfpagewidth 8.5in
 \pdfpageheight 11in 
@@ -167,6 +168,60 @@
 
 \newpage
 
+\section*{Question 2}
+\begin{enumerate}
+    \item Given: 
+    \begin{align*}
+        Q(X | \theta, \pi) &= \sum_{\vec{x_i} \in X}\sum_{j=1}^{k} \gamma_{ij} \left( \log(\pi_{j}) + \log(Pr[\vec{x_i} | \vec{\mu}_j, \Sigma_j])\right)
+        s.t. \sum_{j = 1}^{k} \pi_{ij} &= 1
+    \end{align*}
+    We will use Lagrange multipliers to find the value of $\mu_m$ that maximizes $Q(X | \theta, \pi)$. Consider:
+    \begin{align*}
+        Q(X | \theta, \pi) &= \sum_{\vec{x_i} \in X}\sum_{j=1}^{k} \gamma_{ij} \left( \log(\pi_{j}) + \log(Pr[\vec{x_i} | \vec{\mu}_j, \Sigma_j])\right) - \lambda \left(\sum_{j = 1}^{k} \pi_{ij} - 1\right) & \text{adding constraint} \\
+        \Rightarrow \pd{Q}{\mu_m} &= \sum_{\vec{x_i} \in X}\sum_{j=1}^{k} \gamma_{ij} \left( \log(\pi_{j}) + \log(Pr[\vec{x_i} | \vec{\mu}_j, \Sigma_j])\right) & \text{constant terms disappear} \\
+        &= \pd{}{\vec{\mu_m}}\sum_{\vec{x_i} \in X}\sum_{j=1}^{k} \gamma_{ij} \log \pi_j + \gamma_{ij} \log(Pr[\vec{x_i} | \vec{\mu}_j, \Sigma_j]) & \text{foiling} \\
+        &= \sum_{\vec{x_i} \in X}\sum_{j=1}^{k} \gamma_{ij} \pd{}{\vec{\mu_m}} \log(Pr[\vec{x_i} | \vec{\mu_j}, \Sigma_j]) & \text{constant terms disappear} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\vec{\mu_m}} \log(Pr[\vec{x_i} | \vec{\mu_m}, \Sigma_m]) & \text{only terms with } j = m \text{ remain} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\vec{\mu_m}} \log \frac{e^{-\frac{1}{2} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})}}{\sqrt{(2\pi)^k \left|\Sigma\right|}} & \text{substituting pdf} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\vec{\mu_m}} \log e^{-\frac{1}{2} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})} - \log \left(\sqrt{(2\pi)^k \left|\Sigma\right|}\right) & \text{using log rules} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\vec{\mu_m}} -\frac{1}{2} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) & \text{constant terms disappear} \\
+        &= \sum_{\vec{x_i} \in X} -\frac{\gamma_{im}}{2} \left( \left[ \boldsymbol{\Sigma}^{-1} + {\boldsymbol{\Sigma}^{-1}}^T \right] (\vec{x_i} - \vec{\mu_m}) \right) \pd{}{\vec{\mu_m}} (\vec{x_i} - \vec{\mu_m}) & \text{result from 1.4} \\
+        &= \sum_{\vec{x_i} \in X} -\frac{\gamma_{im}}{2} \left( -2\boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) \right) & \text{since } \boldsymbol{\Sigma} \text{ is symmetric} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) & \text{simplifying} \\
+    \end{align*}
+    Setting the equation above to $0$ and solving for $\vec{\mu_m}$ gives:
+    \begin{align*}
+        \Rightarrow \pd{Q}{\vec{\mu_m}} &= 0 & \text{setting derivative to } 0 \text{ for maximization} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) &= 0 & \text{from previous result} \\
+        \Rightarrow \boldsymbol{\Sigma}^{-1} \sum_{\vec{x_i} \in X} \gamma_{im} (\vec{x_i} - \vec{\mu_m}) &= 0 & \text{factoring out } \boldsymbol{\Sigma}^{-1} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} (\vec{x_i} - \vec{\mu_m}) &= 0 & \text{columns of } \boldsymbol{\Sigma}^{-1} \text{ are linearly independent} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} \vec{x_i} - \sum_{\vec{x_i} \in X} \gamma_{im} \vec{\mu_m} &= 0 & \text{distributing the sum} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} \vec{x_i} - \vec{\mu_m} \sum_{\vec{x_i} \in X} \gamma_{im} &= 0 & \text{factoring out } \vec{\mu_m} \\
+        \Rightarrow \vec{\mu_m} &= \frac{\sum_{\vec{x_i} \in X} \gamma_{im} \vec{x_i}}{\sum_{\vec{x_i} \in X} \gamma_{im}} & \text{solving for } \vec{\mu_m} \\
+    \end{align*}
+
+    \item Similarly, we will solve for the MLE estimate, $\boldsymbol{\Sigma}_m^*$. Consider:
+    \begin{align*}
+        \pd{Q}{\boldsymbol{\Sigma}_m} &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\boldsymbol{\Sigma}_m} \left[ \log e^{-\frac{1}{2} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})} - \log \left(\sqrt{(2\pi)^k \left|\boldsymbol{\Sigma}\right|}\right) \right] & \text{from part (a)} \\
+        &= \sum_{\vec{x_i} \in X} \gamma_{im} \pd{}{\boldsymbol{\Sigma}_m} \left[ -\frac{1}{2} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) - \frac{k}{2}\log (2\pi) - \frac{1}{2} \log \left|\boldsymbol{\Sigma}\right| \right] & \text{log rules} \\
+        &= \sum_{\vec{x_i} \in X} -\frac{\gamma_{im}}{2} \pd{}{\boldsymbol{\Sigma}_m} \left[ (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) + k\log (2\pi) + \log \left|\boldsymbol{\Sigma}\right| \right] & \text{linearity of differentiation} \\
+        &= \sum_{\vec{x_i} \in X} -\frac{\gamma_{im}}{2} \left[ \pd{}{\boldsymbol{\Sigma}_m} (\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m}) + \pd{}{\boldsymbol{\Sigma}_m} \log \left|\boldsymbol{\Sigma}\right| \right] & \text{linearity of differentiation} \\
+        &= \sum_{\vec{x_i} \in X} -\frac{\gamma_{im}}{2} \left[ -\boldsymbol{\Sigma}^{-T} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-T}  + \boldsymbol{\Sigma}^{-T} \right] & \text{matrix cookbook} \\
+        &= \sum_{\vec{x_i} \in X} \frac{\gamma_{im}}{2} \left[ \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1}  - \boldsymbol{\Sigma}^{-1} \right] & \text{since } \boldsymbol{\Sigma} \text{ is symmetric} \\
+    \end{align*}
+    Setting the equation above to $0$ and solving for $\boldsymbol{\Sigma}_m$ gives:
+    \begin{align*}
+        \pd{Q}{\boldsymbol{\Sigma}_m} &= 0 & \text{setting derivative to } 0 \text{ for maximization} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \frac{\gamma_{im}}{2} \left[ \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1}  - \boldsymbol{\Sigma}^{-1} \right] &= 0 & \text{from previous result} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} \boldsymbol{\Sigma}^{-1} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T \boldsymbol{\Sigma}^{-1} &= \sum_{\vec{x_i} \in X} \gamma_{im} \boldsymbol{\Sigma}^{-1} & \text{rearranging} \\
+        \Rightarrow \boldsymbol{\Sigma}^{-1} \left( \sum_{\vec{x_i} \in X} \gamma_{im} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T \right) \boldsymbol{\Sigma}^{-1} &= \left( \sum_{\vec{x_i} \in X} \gamma_{im} \right) \boldsymbol{\Sigma}^{-1}  & \text{factoring out } \boldsymbol{\Sigma}^{-1} \\
+        \Rightarrow \sum_{\vec{x_i} \in X} \gamma_{im} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T &= \boldsymbol{\Sigma} \left( \sum_{\vec{x_i} \in X} \gamma_{im} \right) & \text{multiplying both sides by } \boldsymbol{\Sigma} \\
+        \Rightarrow \frac{\sum_{\vec{x_i} \in X} \gamma_{im} (\vec{x_i} - \vec{\mu_m})(\vec{x_i} - \vec{\mu_m})^T}{\sum_{\vec{x_i} \in X} \gamma_{im}} &= \boldsymbol{\Sigma}_m^* & \text{solving for } \boldsymbol{\Sigma}_m \\
+    \end{align*}
+\end{enumerate}
+
+\newpage
+
 \section*{Question 3}
 \begin{enumerate}
     \item Let $\textbf{M} \in \mathbb{R}^{n \times n}$ be a symmetric matrix. Suppose $\textbf{M}$ has eigenvectors $\vec{v_1}, \vec{v_2}$ with distinct eigenvalues $\lambda_1, \lambda_2$. We will show that
@@ -192,5 +247,41 @@
         &= \textbf{A}^T \textbf{A} & \text{double transpose} \\
         &\Rightarrow \textbf{A}^T \textbf{A} \text{ is symmetric by definition} \\
     \end{align*}
+
+    \item Let $\textbf{A} = \textbf{U} \boldsymbol{\Sigma} \textbf{V}^T$ be the SVD of $\textbf{A}$, $\vec{v}$ be an eigenvector of $\textbf{A} \textbf{A}^T$ with eigenvalue $\lambda$.
+    Consider $\textbf{A} \textbf{A}^T$:
+    \begin{align*}
+        \textbf{A} \textbf{A}^T &= \textbf{U} \boldsymbol{\Sigma} \textbf{V}^T (\textbf{U} \boldsymbol{\Sigma} \textbf{V}^T)^T & \text{substituting SVD of } \textbf{A} \\
+        &= \textbf{U} \boldsymbol{\Sigma} \textbf{V}^T \textbf{V} \boldsymbol{\Sigma}^T \textbf{U}^T & \text{transpose of a matrix product} \\
+        &= \textbf{U} \boldsymbol{\Sigma} \boldsymbol{\Sigma}^T \textbf{U}^T & \text{since } \textbf{V}^T \textbf{V} = \textbf{I} \\
+        &= \textbf{U} \boldsymbol{\Sigma}^2 \textbf{U}^T & \text{since } \boldsymbol{\Sigma} \text{ is diagonal} \\
+        \Rightarrow \textbf{AA}^T \textbf{U} &= \textbf{U} \boldsymbol{\Sigma}^2 \textbf{U}^T \textbf{U} & \text{multiplying both sides by } \textbf{U} \\
+        \Rightarrow \textbf{AA}^T \textbf{U} &= \textbf{U} \boldsymbol{\Sigma}^2 & \text{since } \textbf{U}^T \textbf{U} = \textbf{I} \\\
+        \Rightarrow \begin{bmatrix}
+            \textbf{AA}^T \vec{u_1} & \textbf{AA}^T \vec{u_2} & \cdots & \textbf{AA}^T \vec{u_m}
+        \end{bmatrix} &= \begin{bmatrix}
+            \sigma_1^2 \vec{u_1} & \sigma_2^2 \vec{u_2} & \cdots & \sigma_m^2 \vec{u_m}
+        \end{bmatrix} & \text{writing in terms of columns} \\
+    \end{align*}
+    Therefore, the eigenvectors of $\textbf{A} \textbf{A}^T$ are the columns of $\textbf{U}$ and the corresponding eigenvalues are the squares of the singular values in $\boldsymbol{\Sigma}$.
+    \item Similarly, consider $\textbf{A}^T \textbf{A}$:
+    \begin{align*}
+        \textbf{A}^T \textbf{A} &= (\textbf{U} \boldsymbol{\Sigma} \textbf{V}^T)^T \textbf{U} \boldsymbol{\Sigma} \textbf{V}^T & \text{substituting SVD of } \textbf{A} \\
+        &= \textbf{V} \boldsymbol{\Sigma}^T \textbf{U}^T \textbf{U} \boldsymbol{\Sigma} \textbf{V}^T & \text{transpose of a matrix product} \\
+        &= \textbf{V} \boldsymbol{\Sigma}^T \boldsymbol{\Sigma} \textbf{V}^T & \text{since } \textbf{U}^T \textbf{U} = \textbf{I} \\
+        &= \textbf{V} \boldsymbol{\Sigma}^2 \textbf{V}^T & \text{since } \boldsymbol{\Sigma} \text{ is diagonal} \\
+        \Rightarrow \textbf{A}^T\textbf{A} \textbf{V} &= \textbf{V} \boldsymbol{\Sigma}^2 \textbf{V}^T \textbf{V} & \text{multiplying both sides by } \textbf{V} \\
+        \Rightarrow \textbf{A}^T\textbf{A} \textbf{V} &= \textbf{V} \boldsymbol{\Sigma}^2 & \text{since } \textbf{V}^T \textbf{V} = \textbf{I} \\
+        \Rightarrow \begin{bmatrix}
+            \textbf{A}^T\textbf{A} \vec{v_1} & \textbf{A}^T\textbf{A} \vec{v_2} & \cdots & \textbf{A}^T\textbf{A} \vec{v_n}
+        \end{bmatrix} &= \begin{bmatrix}
+            \sigma_1^2 \vec{v_1} & \sigma_2^2 \vec{v_2} & \cdots & \sigma_n^2 \vec{v_n}
+        \end{bmatrix} & \text{writing in terms of columns} \\
+    \end{align*}
+    Therefore, the eigenvectors of $\textbf{A}^T \textbf{A}$ are the columns of $\textbf{V}$ and the corresponding eigenvalues are the squares of the singular values in $\boldsymbol{\Sigma}$.
 \end{enumerate}
+
+\newpage
+
+\section*{Extra Credit}
 \end{document}
