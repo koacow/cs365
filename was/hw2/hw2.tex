@@ -107,13 +107,18 @@
     \end{align*}
     Then, differentiating w.r.t. $x_i$ gives:
     \begin{align*}
-        \pd{||\vec{x}||_p^p}{x_i} &= p |x_i|^{p - 1} \cdot \text{sign}(x_i) & \text{chain rule} \\
+        \pd{||\vec{x}||_p^p}{x_i} &= p |x_i|^{p - 1} \cdot sign(x_i) & \text{chain rule} \\
         \Rightarrow \pd{||\vec{x}||_p}{\vec{x}} &= \begin{bmatrix}
             \pd{||\vec{x}||_p^p}{x_1} & \pd{||\vec{x}||_p^p}{x_2} & \cdots & \pd{||\vec{x}||_p^p}{x_n}
         \end{bmatrix} & \text{writing derivative in vector form} \\
         &= \begin{bmatrix}
-            p |x_1|^{p - 1} \cdot sgn(x_1) & \cdots & p |x_n|^{p - 1} \cdot sgn(x_n)
+            p |x_1|^{p - 1} \cdot sign(x_1) & \cdots & p |x_n|^{p - 1} \cdot sign(x_n)
         \end{bmatrix} & \text{substituting previous result} \\
+        &\text{where } sign(x_i) = \begin{cases}
+            1 & \text{if } x_i > 0 \\
+            -1 & \text{if } x_i < 0 \\
+            0 & \text{if } x_i = 0
+        \end{cases} \\
     \end{align*}
     \item Let $\textbf{A} \in \mathbb{R}^{n \times n}$. First, we find the scalar equation for $\vec{x}^T \textbf{A} \vec{x}$.
     \begin{align*}
@@ -284,4 +289,23 @@
 \newpage
 
 \section*{Extra Credit}
+In lecture, we saw that the probability of the Monte-carlo Johnson-Lindenstrauss algorithm succeeding is $1 - \delta$ where $\delta < 1$. Let $X$ be the number of runs of the Las Vegas version
+of this algorithm. Then, the expected number of times we need to run the Monte-carlo algorithm until it succeeds is given by:
+\begin{align*}
+    E[X] &= \frac{1}{P[\text{success}]} & \text{definition of expected value for geometric distribution} \\
+    &= \frac{1}{1 - \delta} & \text{substituting probability of success} \\
+\end{align*}
+Therefore, the expected number of runs of the Monte-carlo Johnson-Lindenstrauss algorithm until it succeeds is $\frac{1}{1 - \delta}$.
+Consider the expression relating the target dimension $k$ to the number of points $n$, distortion $\epsilon$ and failure probability $\delta$:
+\begin{align*}
+    k &\geq \frac{24}{3\epsilon^2 - 2\epsilon^3} \log \frac{n}{\delta} & \text{from lecture} \\
+    \Rightarrow \log \frac{n}{\delta} &\leq \frac{k(3\epsilon^2 - 2\epsilon^3)}{24} & \text{rearranging} \\
+    \Rightarrow \frac{n}{\delta} &\leq e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}} & \text{exponentiating both sides} \\
+    \Rightarrow \frac{1}{\delta} &\leq \frac{e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}}}{n} & \text{dividing both sides by } n \\
+    \Rightarrow \delta &\geq \frac{n}{e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}}} & \text{taking reciprocal} \\
+    \Rightarrow 1 - \delta &\leq 1 - \frac{n}{e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}}} & \text{subtracting from }1 \\
+    \Rightarrow \frac{1}{1 - \delta} &\geq \frac{1}{1 - \frac{n}{e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}}}} & \text{taking reciprocal} \\
+\end{align*}
+Therefore, the expected number of runs of the Monte-carlo Johnson-Lindenstrauss algorithm until it succeeds is at most
+\[\frac{1}{1 - \frac{n}{e^{\frac{k(3\epsilon^2 - 2\epsilon^3)}{24}}}}.\]
 \end{document}
