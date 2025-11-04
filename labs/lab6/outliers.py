@@ -17,8 +17,8 @@ DATA_FILEPATH: str = os.path.join(DATA_DIR, "spatial_data.txt") # actual filepat
 
 
 
-K: int = None                                                   # TODO: Set this after looking at the plot!
-ZSCORE_STDDEV_THRESHOLD: float = None                           # TODO: Set this!
+K: int = 10                                                   # TODO: Set this after looking at the plot!
+ZSCORE_STDDEV_THRESHOLD: float = 1                           # TODO: Set this!
 
 
 # TYPES DEFINED
@@ -66,20 +66,27 @@ def reconstruct_X_using_k_features(X: np.ndarray,   # 2d original data matrix
                                    ) -> np.ndarray:
     # get the SVD of X
     U, sigma_diag, V_t = np.linalg.svd(X, full_matrices=False)
+    sigma_diag_copy: np.ndarray = np.copy(sigma_diag)
+    sigma_diag_copy[k:] = 0
 
-    # TODO: complete me!
+    X_hat: np.ndarray = U @ np.diag(sigma_diag_copy) @ V_t
+    return X_hat
 
 
 def calculate_distances(X: np.ndarray,              # 2d original data matrix
                         X_reconstructed: np.ndarray # 2d reconstructed data matrix
                         ) -> np.ndarray:            # 1d array of distance values
-    # TODO: complete me!
-    ...
+    return np.linalg.norm(X - X_reconstructed, ord=2, axis=1)
+
 
 
 def z_score(distances: np.ndarray                   # 1d array of distance values
             ) -> np.ndarray:                        # 1d array of z-score values
     # TODO: complete me!
+    mean = np.mean(distances)
+    stddev = np.std(distances)
+    z_scores = (distances - mean) / stddev
+    return z_scores
     ...
 
 
@@ -91,6 +98,8 @@ def get_outlier_idxs(z_scores: np.ndarray,          # 1d array of z-score values
                      threshold: float               # threshold for outlier detection
                      ) -> np.ndarray:
     # TODO: complete me!
+    outlier_idxs = np.where(np.abs(z_scores) > threshold)[0]
+    return np.sort(outlier_idxs)
     ...
 
 
