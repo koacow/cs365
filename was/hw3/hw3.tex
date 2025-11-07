@@ -1,203 +1,221 @@
 \documentclass[11pt]{article}
 
-%\usepackage{geometry}
-\usepackage[paper=a4paper, 
-            left=20.0mm, right=20.0mm, 
-            top=25.0mm, bottom=25.0mm]{geometry}
-\pagestyle{empty}
-\usepackage{graphicx}
-\usepackage{fancyhdr, lastpage, bbding, pmboxdraw}
-\usepackage[usenames,dvipsnames]{color}
-\definecolor{darkblue}{rgb}{0,0,.6}
-\definecolor{darkred}{rgb}{.7,0,0}
-\definecolor{darkgreen}{rgb}{0,.6,0}
-\definecolor{red}{rgb}{.98,0,0}
-\usepackage[colorlinks,pagebackref,pdfusetitle,urlcolor=darkblue,citecolor=darkblue,linkcolor=darkred,bookmarksnumbered,plainpages=false]{hyperref}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-
-\pagestyle{fancyplain}
-\fancyhf{}
-\lhead{ \fancyplain{}{Course Name} }
-%\chead{ \fancyplain{}{} }
-\rhead{ \fancyplain{}{\today} }
-%\rfoot{\fancyplain{}{page \thepage\ of \pageref{LastPage}}}
-\fancyfoot[RO, LE] {Page \thepage\ of \textcolor{black}{\pageref{LastPage}} }
-\thispagestyle{plain}
-
-%%%%%%%%%%%% LISTING %%%
-\usepackage{listings}
-\usepackage{caption}
-\usepackage{subcaption}
-\DeclareCaptionFont{white}{\color{white}}
-\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
-\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
-\usepackage{verbatim} % used to display code
-\usepackage{fancyvrb}
-\usepackage{acronym}
-\usepackage{amsthm, amsmath, amssymb}
-\usepackage{tikz}
-    \usetikzlibrary{calc, arrows, arrows.meta, positioning}
-
-\VerbatimFootnotes % Required, otherwise verbatim does not work in footnotes!
-
-\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
-\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
-\definecolor{lightlightgray}{gray}{0.93}
-
-\lstset{
-	%language=bash,                          % Code langugage
-	basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
-	keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
-	commentstyle=\color{gray},              % Comments font
-	numbers=left,                           % Line nums position
-	numberstyle=\tiny,                      % Line-numbers fonts
-	stepnumber=1,                           % Step between two line-numbers
-	numbersep=5pt,                          % How far are line-numbers from code
-	backgroundcolor=\color{lightlightgray}, % Choose background color
-	frame=none,                             % A frame around the code
-	tabsize=2,                              % Default tab size
-	captionpos=t,                           % Caption-position = bottom
-	breaklines=true,                        % Automatic line breaking?
-	breakatwhitespace=false,                % Automatic breaks only at whitespace?
-	showspaces=false,                       % Dont make spaces visible
-	showtabs=false,                         % Dont make tabls visible
-	columns=flexible,                       % Column format
-	morekeywords={__global__, __device__},  % CUDA specific keywords
-}
-
-\newcommand{\question}[1]{\section*{\normalsize #1}}
-% \newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
-% \newcommand{\extraspace}[]{
-%     \begin{center}
-%         \textbf{Use this page for extra space.}
-%     \end{center}
-% }
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage[norelsize, linesnumbered, ruled, lined, boxed, commentsnumbered]{algorithm2e}
+\usepackage{fullpage}
 
 
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\pdfpagewidth 8.5in
+\pdfpageheight 11in 
 
+\topmargin 0in
+\oddsidemargin 0in
+\evensidemargin 0in
+
+\newtheorem*{claim}{Claim}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
 
 \begin{document}
+
 \begin{center}
-    {\Large \textsc{HW 3}}
+    \textbf{CS365 Written Assignment 3} \\
+    Khoa Cao \\
+    Due November 14, 2025
 \end{center}
-\begin{center}
-    Due: 11/14/2025 @ 11:59pm EST
-\end{center}
 
-\section*{\textbf{Disclaimer}}
-I encourage you to work together, I am a firm believer that we are at our best (and learn better) when we communicate with our peers. Perspective is incredibly important when it comes to solving problems, and sometimes it takes talking to other humans (or rubber ducks in the case of programmers) to gain a perspective we normally would not be able to achieve on our own. The only thing I ask is that you report who you work with: this is \textbf{not} to punish anyone, but instead will help me figure out what topics I need to spend extra time on/who to help. When you turn in your solution (please use some form of typesetting: do \textbf{NOT} turn in handwritten solutions), please note who you worked with.
-
-
-
-
-
-
-
-
-
-\question{Question 1: Stationary Distributions of Special Markov Chains (25 points)}
-Consider a vector $\vec{q}\in \mathbb{R}^{1\times |V|}$ defined over the vertices of a Markov chain. To show that $\vec{q}$ is a stationary distribution, we must show that $\vec{q}$ is a probability vector. We must also show that $\vec{q}$ obeys the stationary distribution property $\vec{q} = \vec{q} \textbf{M}$:
-\begin{enumerate}
-    \item Show that for a connected and aperiodic markov chain with a transition matrix $M$ that is symmetric, the distribution $\vec{\pi} = \Big(\frac{1}{|V|}, \frac{1}{|V|}, \dots, \frac{1}{|V|}\Big)$ is a stationary distribution.
-
-    \item Show that if we convert a connected, undirected graph into a Markov chain, the distribution $\vec{\pi}$ where $\pi[v] = \frac{deg(v)}{2|E|}$ is a stationary distribution.
-
-    \item Show that if we convert a weighted, connected, undirected graph into a Markov chain, the distribution $\vec{\pi}$ where $\pi[v] = \frac{\sum\limits_{u\in \mathcal{N}_1(v)} w(u\rightarrow v)}{2\sum\limits_{(p\rightarrow q)\in E} w(p\rightarrow q)}$ is a stationary distribution where $\mathcal{N}_1(v)$ is the first neighborhood of vertex $v$ and $w(u\rightarrow v)$ is the weight of edge $u\rightarrow v$.
-\end{enumerate}\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 2: The Pagerank Transform (25 points)}
-Consider Markov chain with row-stochastic transition matrix $\textbf{M}$, none of which is a sink node. Let $\textbf{M}'$ be the result of applying the Pagerank transform to $\textbf{M}$ (i.e. compute $\textbf{M}'=\alpha \textbf{M} + (1-\alpha)\frac{1}{n}\textbf{1}$)
-\begin{enumerate}
-    \item Show that since $\textbf{M}$ is row-stochastic, then $\textbf{M}'$ is also row-stochastic.
-
-    \item The stationary distribution $\vec{q}$ of $\textbf{M}'$ can be computed iteratively via an algorithm called the \textit{power method}:
-\begin{lstlisting}[mathescape=true]
-    $q^{(0)} = \frac{1}{n}\vec{1}$
-
-    $t = 1$
-    repeat
-        $q^{(t)} = q^{(t-1)}\textbf{M}'$
-        $\delta = ||q^{(t)} - q^{(t-1)}||_2$
-        $t = t + 1$
-    until $\delta < \epsilon$
-\end{lstlisting}
-
-\noindent However the computation $\vec{y} = \vec{x}\textbf{M}'$ can be done much faster (by avoiding calculating $\textbf{M}'$ using the following algorithm:
-\begin{lstlisting}[mathescape=true]
-    $\vec{y} = \alpha\vec{x}\textbf{M}$
-    $\beta = ||\vec{x}||_1 - ||\vec{y}||_1$
-    $\vec{y} = \vec{y} + \beta\frac{1}{n}\vec{1}$
-\end{lstlisting}
-Prove that this procedure computes $\vec{y} = \vec{x}\textbf{M}'$. Also, discuss the computational gains of using this procedure instead of $\vec{y} = \vec{x}\textbf{M}'$ as was used in the vanilla power method.
-
-\end{enumerate}\newpage
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 3: Random Graphs (25 points)}
-Consider a graph $G\sim G_{n,p}$. Derive an expression for $Pr[E]$, i.e. the probability of observing the specific graph $G$ from the $G_{n,p}$ model.
-\newpage
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 4: More Random Graphs (25 points)}
-Consider fixed graph $Q=(V, E_Q)$, and consider the distance between two graphs $G_1$ and $G_2$ to be the same as as earlier homework problem:
-$$d(G_1, G_2) = |E_1 \backslash E_2| + |E_2 \backslash E_1|$$
-Design a polynomial time algorithm to compute the expected distance between a graph $G~G_{n,p}$ and fixed graph $Q$. That is, design a polynomial time algorithm to compute:
-$$\displaystyle \mathop{\mathbb{E}}_{G\sim G_{n,p}}[d(G, Q)] = \sum\limits_{G\sim G_{n,p}} Pr[G]d(G,Q)$$
-\newpage
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Extra Credit: Exponential Rate of Converge of the Power Method (40 points)}
-What we will show in this problem is that the rate of converge of the stationary distribution computation (i.e. the power method) for a symmetric row-stochastic matrix is exponential (this is incredibly fast) in the number of iterations $t$. Let $\textbf{M}$ be a square $n\times n$ symmetric row-stochastic matrix and let $\vec{\pi}$ be its stationary distribution (which from problem 1 is the uniform distribution).
+\section*{Question 1}
 
 \begin{enumerate}
-    \item Show that if $\vec{e}_1, \vec{e}_2, \dots, \vec{e}_n$ are eigenvectors of $\textbf{M}$ with corresponding eigenvalues $\lambda_1, \lambda_2, \dots, \lambda_n$, then $\vec{e}_1, \vec{e}_2, \dots, \vec{e}_n$ are also eigenvectors of $\textbf{M}^t$ with corresponding eigenvalues $\lambda_1^t, \lambda_2^t, \dots, \lambda_n^t$
+    \item Let $\textbf{M}$ be the transition matrix of a Markov chain with $|V|$ states and let $\vec{pi}$ be the distribution:
+    \[
+        \vec{\pi} = \left[ \frac{1}{|V|}, \frac{1}{|V|}, \ldots, \frac{1}{|V|} \right]
+    \]
+    First, we show that $\vec{\pi}$ is a probability vector:
+    \begin{align*}
+        ||\vec{\pi}||_1 &= \sum_{i=1}^{|V|} \frac{1}{|V|} & \text{Definition of $\vec{\pi}$} \\
+        &= \frac{|V|}{|V|} & \text{Sum of $|V|$ terms of $\frac{1}{|V|}$} \\
+        &= 1 & \text{(Simplification)} \\
+        &\Rightarrow \vec{\pi} \text{ is a probability vector}
+    \end{align*}
+    Then, we show that $\vec{\pi}\textbf{M} = \vec{\pi}$:
+    \begin{align*}
+        \vec{\pi}\textbf{M} &= \begin{bmatrix}
+        \vec{\pi} \cdot \vec{m}_1 & \vec{\pi} \cdot \vec{m}_2 & \cdots & \vec{\pi} \cdot \vec{m}_n
+    \end{bmatrix} & \text{Definition of matrix multiplication} \\
+        &= \begin{bmatrix}
+        \sum_{i=1}^{|V|} \frac{1}{|V|} m_{i1} & \sum_{i=1}^{|V|} \frac{1}{|V|} m_{i2} & \cdots & \sum_{i=1}^{|V|} \frac{1}{|V|} m_{in}
+        \end{bmatrix} \\
+        &= \begin{bmatrix}
+            \frac{1}{|V|} \sum_{i=1}^{|V|} m_{i1} & \frac{1}{|V|} \sum_{i=1}^{|V|} m_{i2} & \cdots & \frac{1}{|V|} \sum_{i=1}^{|V|} m_{in}
+        \end{bmatrix} & \text{Factoring out $\frac{1}{|V|}$} \\
+        &= \begin{bmatrix}
+            \frac{1}{|V|} \cdot 1 & \frac{1}{|V|} \cdot 1 & \cdots & \frac{1}{|V|} \cdot 1
+        \end{bmatrix} & \textbf{M} \text{ is symmetric and row-stochastic} \\
+        &= \vec{\pi} & \text{Definition of $\vec{\pi}$} \\
+    \end{align*}
+    Since we have shown that $\vec{\pi}$ is a probability vector and that $\vec{\pi}\textbf{M} = \vec{\pi}$, we conclude that $\vec{\pi}$ is a stationary distribution of the Markov chain with transition matrix $\textbf{M}$.
 
-    \item Recall that when calculating the stationary distribution (i.e. with the power method), we are interested in how well $\vec{x}\textbf{M}^t$ approximates the stationary distribution $\vec{\pi}$. In other words, we are interested in $||\vec{x}\textbf{M}^t - \vec{\pi}||_2$. Given that $\vec{x}$ is a linear combination of the eigenvectors (i.e. $\vec{x}=\sum\limits_{i=1}^n \alpha_i\vec{e}_i$ with $\alpha_i=\vec{x}\vec{e}_i^T$ (careful, this could be negative!), show that $||\vec{x}\textbf{M}^t - \vec{\pi}||_2 \le \sqrt{n}\lambda_2^t$. Don't forget that $||\vec{y}||_2 = (\vec{y}\vec{y}^T)^{1/2}$ for any row vector $\vec{y}$.
-
-\textit{Hint}: To show $\alpha_i\le 1$, you will likely want to use the Cauchy-Schwartz inequality for inner product: $\langle\vec{x},\vec{y}\rangle = \vec{x}\vec{y}^T \le ||\vec{x}||_2||\vec{y}||_2$
+    \item Suppose we converted a connected, undirected graph into a Markov chain with. Let $\textbf{M}$ be the transition matrix of this Markov chain and let $\vec{\pi}$ be the distribution where
+    \[
+        \pi[v] = \frac{\deg(v)}{2|E|}
+    \]
+    First, we will show that $\vec{\pi}$ is a probability vector:
+    \begin{align*}
+        ||\vec{\pi}||_1 &= \sum_{v \in V} \frac{\deg(v)}{2|E|} & \text{Definition of $\vec{\pi}$} \\
+        &= \frac{1}{2|E|} \sum_{v \in V} \deg(v) & \text{Factoring out $\frac{1}{2|E|}$} \\
+        &= \frac{1}{2|E|} \cdot 2|E| & \text{every vertex is counted twice in the sum of degrees} \\
+        &= 1 & \text{(Simplification)} \\
+        &\Rightarrow \vec{\pi} \text{ is a probability vector}
+    \end{align*}
+    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$:
+    \begin{align*}
+        \vec{\pi}\textbf{M} &= \begin{bmatrix}
+            \vec{\pi} \cdot \vec{m}_1 & \vec{\pi} \cdot \vec{m}_2 & \cdots & \vec{\pi} \cdot \vec{m}_n
+        \end{bmatrix} & \text{Definition of matrix multiplication} \\
+        &= \begin{bmatrix}
+            \sum_{i = 1}^{|V|} \pi[v_i] \cdot m_{i1} & \cdots & \sum_{i = 1}^{|V|} \pi[v_i] \cdot m_{in}
+        \end{bmatrix} & \text{Expanding the dot products} \\
+        &= \begin{bmatrix}
+            \sum_{i = 1}^{|V|} \frac{\deg(v_i)}{2|E|} \cdot m_{i1} & \cdots & \sum_{i = 1}^{|V|} \frac{\deg(v_i)}{2|E|} \cdot m_{in}
+        \end{bmatrix} & \text{Definition of $\pi[v_i]$} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \sum_{i = 1}^{|V|} \deg(v_i) \cdot m_{i1} & \cdots & \frac{1}{2|E|} \sum_{i = 1}^{|V|} \deg(v_i) \cdot m_{in}
+        \end{bmatrix} & \text{Factoring out $\frac{1}{2|E|}$} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \sum_{i=1}^{|V|} \frac{1}{\deg(v_i)} \frac{w(v_i \rightarrow v_1)}{|\mathcal{N}_1(v_i)|} & \cdots & \frac{1}{2|E|} \sum_{i=1}^{|V|} \frac{1}{\deg(v_i)} \frac{w(v_i \rightarrow v_n)}{|\mathcal{N}_1(v_i)|}
+        \end{bmatrix} & \text{Definition of } m_{ij} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \sum_{v_i \in \mathcal{N}(v_1)} \frac{\deg(v_i)}{\deg(v_i)} & \cdots & \frac{1}{2|E|} \sum_{v_i \in \mathcal{N}(v_n)} \frac{\deg(v_i)}{\deg(v_i)}
+        \end{bmatrix} & \text{Unweighted graph} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \sum_{v_i \in \mathcal{N}(v_1)} 1 & \cdots & \frac{1}{2|E|} \sum_{v_i \in \mathcal{N}(v_n)} 1
+        \end{bmatrix} & \text{Algebra} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \cdot |\mathcal{N}(v_1)| & \frac{1}{2|E|} \cdot |\mathcal{N}(v_2)| & \cdots & \frac{1}{2|E|} \cdot |\mathcal{N}(v_n)|
+        \end{bmatrix} & \text{Definition of summation} \\
+        &= \begin{bmatrix}
+            \frac{1}{2|E|} \cdot \deg(v_1) & \frac{1}{2|E|} \cdot \deg(v_2) & \cdots & \frac{1}{2|E|} \cdot \deg(v_n)
+        \end{bmatrix} & \text{Count of neighbors equals degree} \\
+        &= \vec{\pi} & \text{Definition of $\vec{\pi}$}
+    \end{align*}
+    Since we have shown that $\vec{\pi}$ is a probability vector and that $\vec{\pi}\textbf{M} = \vec{\pi}$, we conclude that $\vec{\pi}$ is a stationary distribution of the Markov chain derived from the connected, undirected graph.
+    \item Suppose that we converted a connected, weighted, undirected graph into a Markov chain and let $\vec{\pi}$ be the distribution where:
+    \[
+        \pi[v] = \frac{\sum_{u \in \mathcal{N}_1(v)} w(u \rightarrow v)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)}
+    \]
+    First, we will show that $\vec{\pi}$ is a probability vector:
+    \begin{align*}
+        ||\vec{\pi}||_1 &= \sum_{v \in V} \pi[v] & \text{Definition of L1 norm} \\
+        &= \sum_{v \in V} \frac{\sum_{u \in \mathcal{N}_1(v)} w(u \rightarrow v)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Definition of } \pi[v] \\
+        &= \frac{\sum_{v \in V}\sum_{u \in \mathcal{N}_1(v)} w(u \rightarrow v)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Sum of fractions with same denominator}\\
+        &= \frac{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Every edge is counted twice} \\ 
+        &= 1 \\
+        &\Rightarrow \vec{\pi} \text{ is a probability vector}
+    \end{align*}
+    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$. Let $\vec{p} = \vec{\pi} \textbf{M}$:
+    \begin{align*}
+        p[v_i] &= \vec{\pi} \cdot \vec{m_i} & \text{Definition of matrix multiplication} \\
+        &= \sum_{j=1}^{|V|} \pi[v_j] \cdot m_{ji} & \text{Expanding the dot product} \\
+        &= \sum_{j=1}^{|V|} \frac{\sum_{u \in \mathcal{N}_1(v_j)} w(u \rightarrow v_j)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} \cdot m_{ji} & \text{Definition of } \pi[v] \\
+        &= \sum_{j=1}^{|V|} \frac{\sum_{u \in \mathcal{N}_1(v_j)} w(u \rightarrow v_j)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} \cdot \frac{w(v_j \rightarrow v_i)}{\sum_{u \in \mathcal{N}_1(v_j)} w(v_j \rightarrow u)} & \text{Definition of } m_{ji} \\
+        &= \sum_{j=1}^{|V|} \frac{w(v_j \rightarrow v_i)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Dividing} \\
+        &= \frac{\sum_{j=1}^{|V|} w(v_j \rightarrow v_i)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Combining fractions} \\
+        &= \frac{\sum_{u \in \mathcal{N}_1(v_i)} w(u \rightarrow v_i)}{2 \sum_{(p \rightarrow q) \in E} w(p \rightarrow q)} & \text{Only neighbors of } v_i \text{ contribute} \\
+        &= \pi[v_i] & \text{Definition of } \pi[v_i] \\
+        &\Rightarrow \vec{p} = \vec{\pi} \textbf{M} = \vec{\pi}
+    \end{align*}
+    Since we have shown that $\vec{\pi}$ is a probability vector and that $\vec{\pi}\textbf{M} = \vec{\pi}$, we conclude that $\vec{\pi}$ is a stationary distribution of the Markov chain derived from the connected, weighted, undirected graph.
 \end{enumerate}
 
-\end{document}
+\newpage
 
+\section*{Question 2}
+\begin{enumerate}
+    \item Let $\textbf{M}$ be row-stochastic. We will show that $\textbf{M'} = \alpha \textbf{M} + \frac{1 - \alpha}{n} \textbf{1}$ is also row-stochastic. First we will show that the $ij$-th entry of $\textbf{M'}$ is between 0 and 1:
+    \begin{align*}
+        m_{ij}' &= \alpha m_{ij} + \frac{1 - \alpha}{n} \cdot 1 & \text{Matrix multiplication definition} \\
+        &= \alpha m_{ij} + \frac{1 - \alpha}{n} & \text{Simplification} \\
+        \Rightarrow min(m_{ij}') &= \frac{1 - \alpha}{n} \geq 0 & \text{Since } 1 - \alpha \geq 0 \text{ and } n > 0 \text{ } (1) \\
+        max(m_{ij}') &= \alpha + \frac{1 - \alpha}{n} \\
+        &= \frac{\alpha n + 1 - \alpha}{n} & \text{Finding common denominator} \\
+        &\leq \frac{n}{n} & \text{Since } \alpha \leq 1 \\
+        &\leq 1 & \text{Simplification } (2) \\
+        (1), (2) &\Rightarrow 0 \leq m_{ij}' \leq 1
+    \end{align*}
+    Next, we will show that the sum of each row in $\textbf{M'}$ is equal to 1:
+    \begin{align*}
+        \sum_{j=1}^{n} m_{ij}' &= \sum_{j=1}^{n} \left( \alpha m_{ij} + \frac{1 - \alpha}{n} \right) & \text{Using results from above} \\
+        &= \alpha \sum_{j=1}^{n} m_{ij} + \sum_{j=1}^{n} \frac{1 - \alpha}{n} & \text{Distributing the summation} \\
+        &= \alpha \cdot 1 + (1 - \alpha) & \text{Since } \textbf{M} \text{ is row-stochastic} \\
+        &= 1 & \text{Simplification}
+    \end{align*}
+    Since we have shown that each entry of $\textbf{M'}$ is between 0 and 1 and that the sum of each row in $\textbf{M'}$ is equal to 1, we conclude that $\textbf{M'}$ is row-stochastic.
+    \item We will show that the algorithm computes $\vec{y} = \vec{x} \textbf{M'}$ where $\textbf{M'} = \alpha \textbf{M} + \frac{1 - \alpha}{n} \textbf{1}$.
+    \begin{align*}
+        \vec{y} &= \vec{y} + \beta \frac{1}{n} \vec{1} & \text{Line 3 of the algorithm} \\
+        &= \alpha \vec{x} \textbf{M} + \left(||\vec{x}||_1 - ||\alpha \vec{x} \textbf{M}||_1 \right) \frac{1}{n} \vec{1} & \text{Substituting } \vec{y} \text{ and } \beta \\
+        &= \alpha \vec{x} \textbf{M} + \left(1 - \alpha ||\vec{x} \textbf{M}||_1 \right) \frac{1}{n} \vec{1} & \vec{x} \text{ is a probability vector} \\
+        &= \alpha \vec{x} \textbf{M} + \left(1 - \alpha \cdot 1 \right) \frac{1}{n} \vec{1} & \textbf{M} \text{ is row-stochastic and } \vec{x} \text{ is a probability vector} \\
+        &= \alpha \vec{x} \textbf{M} + \frac{1 - \alpha}{n} \vec{1} & \text{Simplification} \\
+        &= \vec{x} \left( \alpha \textbf{M} + \frac{1 - \alpha}{n} \textbf{1} \right) & \text{Factoring out } \vec{x} \\
+        &= \vec{x} \textbf{M'} & \text{Definition of } \textbf{M'}
+    \end{align*}
+    This algorithm saves time by avoiding the need to compute $\textbf{M'}$ explicitly, which would require $O(n^2)$ time.
+\end{enumerate}
+\section*{Question 3}
+
+Let $G \sim G_{n,p}$ be a graph generated from the $G_{n, p}$ model. Let $v_1, v_2, \ldots, v_n$ be the vertices of $G$ and $E_{i,j}$ be the outcome of the edge between $v_i$ and $v_j$ (where $i < j$).
+Then, the probability of observing a specific graph $G$ with a given edge set is determined by:
+\begin{align*}
+    Pr[E_{i,j}] &= \begin{cases}
+        p & \text{if } (v_i, v_j) \in E \\
+        1 - p & \text{if } (v_i, v_j) \notin E
+    \end{cases} & \text{Definition of } G_{n,p} \\
+    \Rightarrow Pr[E] &= \prod_{1 \leq i < j \leq n} Pr[E_{i,j}] & \text{Independence of edges} \\
+    &= \prod_{(v_i, v_j) \in E} p \cdot \prod_{(v_i, v_j) \notin E} (1 - p) & \text{Separating edges in } E \text{ and not in } E \\
+    &= p^{|E|} (1 - p)^{\binom{n}{2} - |E|} & \text{Counting the number of edges} \\
+\end{align*}
+Therefore, the probability of observing a specific graph $G$ with edge set $E$ in the $G_{n,p}$ model is given by $Pr[E] = p^{|E|} (1 - p)^{\binom{n}{2} - |E|}$.
+
+\newpage
+
+\section*{Question 4}
+Consider the expected distance between a fixed graph $Q$ and a random graph $G \sim G_{n,p}$:
+\begin{align*}
+    \mathcal{E}_{G \sim G_{n,p}}[d(G, Q)] &= \sum_{G \sim G_(n, p)} Pr[G] \cdot d(G, Q) & \text{Given} \\
+    &= \sum_{G \sim G_(n, p)} Pr[G] \cdot \left[|E_G \setminus E_Q| + |E_Q \setminus E_G| \right] & \text{Definition of } d(G, Q) \\
+    &= \sum_{G \sim G_(n, p)} p^{|E_G|} (1 - p)^{\binom{n}{2} - |E_G|} \cdot \left[|E_G \setminus E_Q| + |E_Q \setminus E_G| \right] & \text{From Question 3} \\
+\end{align*}
+\text{TODO: Unfinished}
+
+\newpage
+
+\section*{Extra Credit}
+\begin{enumerate}
+    \item Let $\textbf{M} \in \mathcal{R}^{n \times n}$ be a row-stochastic transition matrix. Consider an arbitrary eigenvector $\vec{e}$ of 
+    $\textbf{M}$ with corresponding eigenvalue $\lambda$. We will show that $\vec{e}$ is also an eigenvector of $\textbf{M}^t$ with eigenvalue $\lambda^t$ for any integer $t \geq 1$ using induction on $t$.
+    \begin{itemize}
+        \item \textbf{Base Case}: Let $t = 1$. Then, we have:
+        \begin{align*}
+            \vec{e} \textbf{M}^1 &= \vec{e} \textbf{M} & \text{Matrix exponentation} \\
+            &= \lambda \vec{e} & \text{Definition of eigenvector} \\
+            &\Rightarrow \vec{e} \text{ is an eigenvector of } \textbf{M}^1 \text{ with eigenvalue } \lambda^1
+        \end{align*}
+        Thus, the base case holds.
+        \item \textbf{Inductive Step}: Assume that for some integer $k \geq 1$, $\vec{e}$ is an eigenvector of $\textbf{M}^k$ with eigenvalue $\lambda^k$. 
+        We will show that $\vec{e}$ is also an eigenvector of $\textbf{M}^{k+1}$ with eigenvalue $\lambda^{k+1}$.
+        \begin{align*}
+            \vec{e} \textbf{M}^{k+1} &= \vec{e} \textbf{M}^k \textbf{M} & \text{Matrix exponentation} \\
+            &= \lambda^k \vec{e} \textbf{M} & \text{Inductive Hypothesis} \\
+            &= \lambda^k \lambda \vec{e} & \text{Definition of eigenvector} \\
+            &= \lambda^{k+1} \vec{e} & \text{Simplification} \\
+            &\Rightarrow \vec{e} \text{is an eigenvector of } \textbf{M}^{k+1} \text{ with eigenvalue } \lambda^{k+1}
+        \end{align*}
+        Thus, the inductive step holds.
+    \end{itemize}
+    \item Let $\vec{\pi}$ be a stationary distribution of $\textbf{M}$
+\end{enumerate}
+\end{document}
