@@ -17,6 +17,7 @@
 
 \newtheorem*{claim}{Claim}
 \newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
 \begin{document}
 
@@ -165,6 +166,9 @@
     \end{align*}
     This algorithm saves time by avoiding the need to compute $\textbf{M'}$ explicitly, which would require $O(n^2)$ time.
 \end{enumerate}
+
+\newpage
+
 \section*{Question 3}
 
 Let $G \sim G_{n,p}$ be a graph generated from the $G_{n, p}$ model. Let $v_1, v_2, \ldots, v_n$ be the vertices of $G$ and $E_{i,j}$ be the outcome of the edge between $v_i$ and $v_j$ (where $i < j$).
@@ -185,12 +189,29 @@ Therefore, the probability of observing a specific graph $G$ with edge set $E$ i
 \section*{Question 4}
 Consider the expected distance between a fixed graph $Q$ and a random graph $G \sim G_{n,p}$:
 \begin{align*}
-    \mathcal{E}_{G \sim G_{n,p}}[d(G, Q)] &= \sum_{G \sim G_(n, p)} Pr[G] \cdot d(G, Q) & \text{Given} \\
-    &= \sum_{G \sim G_(n, p)} Pr[G] \cdot \left[|E_G \setminus E_Q| + |E_Q \setminus E_G| \right] & \text{Definition of } d(G, Q) \\
-    &= \sum_{G \sim G_(n, p)} p^{|E_G|} (1 - p)^{\binom{n}{2} - |E_G|} \cdot \left[|E_G \setminus E_Q| + |E_Q \setminus E_G| \right] & \text{From Question 3} \\
+    \mathbb{E}_{G \sim G_{n,p}}[d(G, Q)] &= \mathbb{E}_{G \sim G_{n,p}} \left[ |E_G \setminus E_Q| + |E_Q \setminus E_G| \right] & \text{Definition of distance} \\
+    &= \mathbb{E}_{G \sim G_{n,p}} \left[ |E_G \setminus E_Q| \right] + \mathbb{E}_{G \sim G_{n,p}} \left[ |E_Q \setminus E_G| \right] & \text{Linearity of expectation} \\
 \end{align*}
-\text{TODO: Unfinished}
+We compute each term separately. For the first term, note that $|E_G \setminus E_Q|$ counts the edges present in $G$ but not in $Q$. 
+The possible number of such edges ranges from 0 to $\binom{n}{2} - |E_Q|$. Each edge not in $Q$ has a probability $p$ of being present in $G$. Thus, the expected number of such edges is:
+\begin{align*}
+    \mathbb{E}_{G \sim G_{n, p}} \left[ |E_G \setminus E_Q| \right] &= \sum_{i=0}^{\binom{n}{2} - |E_Q|} i \cdot \binom{\binom{n}{2} - |E_Q|}{i} p^i (1 - p)^{\binom{n}{2} - |E_Q| - i} & \text{Definition of expectation} \\
+    &= p \cdot \left[\binom{n}{2} - |E_Q|\right] & \text{Expected value of a Binomial distribution}
+\end{align*}
 
+For the second term, note that $|E_Q \setminus E_G|$ counts the edges present in $Q$ but not in $G$.
+The possible number of such edges ranges from 0 to $|E_Q|$. Each edge in $Q$ has a probability $1 - p$ of being absent in $G$. Thus, the expected number of such edges is:
+\begin{align*}
+    \mathbb{E}_{G \sim G_{n, p}} \left[ |E_Q \setminus E_G| \right] &= \sum_{i=0}^{|E_Q|} i \cdot \binom{|E_Q|}{i} (1 - p)^i p^{|E_Q| - i} & \text{Definition of expectation} \\
+    &= (1 - p) \cdot |E_Q| & \text{Expected value of a Binomial distribution}
+\end{align*}
+Combining both terms, we have:
+\begin{align*}
+    \mathbb{E}_{G \sim G_{n,p}}[d(G, Q)] &= p \cdot \left[\binom{n}{2} - |E_Q|\right] + (1 - p) \cdot |E_Q| & \text{Combining both terms} \\
+\end{align*}
+
+Therefore, to compute the expected distance between a fixed graph $Q$ and a random graph $G \sim G_{n,p}$, we can count the number of edges in $Q$ and use the formula above.
+This algorithm runs in $O(n^2)$ time since counting the edges in $Q$ takes $O(n^2)$ time.
 \newpage
 
 \section*{Extra Credit}
@@ -216,6 +237,14 @@ Consider the expected distance between a fixed graph $Q$ and a random graph $G \
         \end{align*}
         Thus, the inductive step holds.
     \end{itemize}
-    \item Let $\vec{\pi}$ be a stationary distribution of $\textbf{M}$
+    \item Let $\vec{\pi}$ be a stationary distribution of $\textbf{M}$. We will show that $||\vec{x} \textbf{M}^t - \vec{\pi}||_2 \leq \sqrt{n} \lambda_2^t$ for any probability vector $\vec{x}$, where $\lambda_2$ is the second largest eigenvalue (in absolute value) of $\textbf{M}$.
+    Consider the difference $||\vec{x} \textbf{M}^t - \vec{\pi}||_2$:
+    \begin{align*}
+        \norm{\vec{x} \textbf{M}^t - \vec{\pi}}_2 &= \norm{\left(\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i\right) \textbf{M}^t - \vec{\pi}}_2 & \text{Expanding } \vec{x} \text{ in terms of eigenvectors} \\
+        &= \norm{\left(\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i\right) \textbf{M}^t - \vec{\pi} \textbf{M}^t}_2 & \text{Property of stationary distribution} \\
+        &= \norm{\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i \textbf{M}^t - \vec{\pi} \textbf{M}^t}_2 & \text{Distributing } \textbf{M}^t \\
+        &= \norm{\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \lambda_i^t \vec{e}_i - \vec{\pi}}_2 & \text{From Extra Credit 1} \\
+    \end{align*}
+    TODO: Unfinished
 \end{enumerate}
 \end{document}
