@@ -1,5 +1,5 @@
 # SYSTEM IMPORTS
-from typing import List
+from typing import List, Union
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.sparse as sp
@@ -21,20 +21,34 @@ def vanilla_pm(P: np.ndarray,                       # note this is always a dens
                epsilon: float=1e-9,
                max_iters=1e6
                ) -> np.ndarray:
-    return None
+    x: np.ndarray = np.ones(P.shape[0]) / P.shape[0]
+    for i in range(int(max_iters)):
+        x_new: np.ndarray = x @ P
+        if np.linalg.norm(x_new - x, 1) < epsilon:
+            return x_new
+        x = x_new
+    return x
 
 
 """
     Given a transition matrix P, alpha, and convergence criteria (max number of iters and epsilon)
     This function should return the stationary distribution of P. The transition matrix input to this method
-    does not have to be connected and aperiodic because this implements the clevel power method.
+    does not have to be connected and aperiodic because this implements the clever power method.
 """
 def clever_pm(P: Union[np.ndarray, sp.csr_matrix],  # note the input could be dense OR sparse
               alpha: float,
               epsilon: float=1e-9,
               max_iters=1e6
               ) -> np.ndarray:
-    return None
+    x: np.ndarray = np.ones(P.shape[0]) / P.shape[0]
+    for i in range(int(max_iters)):
+        x_new: np.ndarray = alpha * (x @ P)
+        beta = np.sum(x) - np.sum(x_new)
+        x_new += beta / P.shape[0]
+        if np.linalg.norm(x_new - x, 1) < epsilon:
+            return x_new
+        x = x_new
+    return x
 
 
 def main() -> None:
