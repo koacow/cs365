@@ -22,9 +22,9 @@ def vanilla_pm(P: np.ndarray,                       # note this is always a dens
                max_iters=1e6
                ) -> np.ndarray:
     x: np.ndarray = np.ones(P.shape[0]) / P.shape[0]
-    for i in range(int(max_iters)):
+    for _ in range(int(max_iters)):
         x_new: np.ndarray = x @ P
-        if np.linalg.norm(x_new - x, 1) < epsilon:
+        if np.linalg.norm(x_new - x, 2) < epsilon:
             return x_new
         x = x_new
     return x
@@ -41,11 +41,11 @@ def clever_pm(P: Union[np.ndarray, sp.csr_matrix],  # note the input could be de
               max_iters=1e6
               ) -> np.ndarray:
     x: np.ndarray = np.ones(P.shape[0]) / P.shape[0]
-    for i in range(int(max_iters)):
+    for _ in range(int(max_iters)):
         x_new: np.ndarray = alpha * (x @ P)
         beta = np.sum(x) - np.sum(x_new)
         x_new += beta / P.shape[0]
-        if np.linalg.norm(x_new - x, 1) < epsilon:
+        if np.linalg.norm(x_new - x, 2) < epsilon:
             return x_new
         x = x_new
     return x
