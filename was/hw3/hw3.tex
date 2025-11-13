@@ -41,7 +41,7 @@
         &= 1 & \text{(Simplification)} \\
         &\Rightarrow \vec{\pi} \text{ is a probability vector}
     \end{align*}
-    Then, we show that $\vec{\pi}\textbf{M} = \vec{\pi}$:
+    Then, we show that $\vec{\pi}\textbf{M} = \vec{\pi}$. Let $\vec{m}_i$ be the $i$-th column of $\textbf{M}$:
     \begin{align*}
         \vec{\pi}\textbf{M} &= \begin{bmatrix}
         \vec{\pi} \cdot \vec{m}_1 & \vec{\pi} \cdot \vec{m}_2 & \cdots & \vec{\pi} \cdot \vec{m}_n
@@ -71,7 +71,7 @@
         &= 1 & \text{(Simplification)} \\
         &\Rightarrow \vec{\pi} \text{ is a probability vector}
     \end{align*}
-    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$:
+    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$. Let $\vec{m}_i$ be the $i$-th column of $\textbf{M}$:
     \begin{align*}
         \vec{\pi}\textbf{M} &= \begin{bmatrix}
             \vec{\pi} \cdot \vec{m}_1 & \vec{\pi} \cdot \vec{m}_2 & \cdots & \vec{\pi} \cdot \vec{m}_n
@@ -116,7 +116,7 @@
         &= 1 \\
         &\Rightarrow \vec{\pi} \text{ is a probability vector}
     \end{align*}
-    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$. Let $\vec{p} = \vec{\pi} \textbf{M}$:
+    Next, we will show that $\vec{\pi} \textbf{M} = \vec{\pi}$. Let $\vec{p} = \vec{\pi} \textbf{M}$ and $\vec{m}_i$ be the $i$-th column of $\textbf{M}$:
     \begin{align*}
         p[v_i] &= \vec{\pi} \cdot \vec{m_i} & \text{Definition of matrix multiplication} \\
         &= \sum_{j=1}^{|V|} \pi[v_j] \cdot m_{ji} & \text{Expanding the dot product} \\
@@ -237,14 +237,34 @@ This algorithm runs in $O(n^2)$ time since counting the edges in $Q$ takes $O(n^
         \end{align*}
         Thus, the inductive step holds.
     \end{itemize}
-    \item Let $\vec{\pi}$ be a stationary distribution of $\textbf{M}$. We will show that $||\vec{x} \textbf{M}^t - \vec{\pi}||_2 \leq \sqrt{n} \lambda_2^t$ for any probability vector $\vec{x}$, where $\lambda_2$ is the second largest eigenvalue (in absolute value) of $\textbf{M}$.
-    Consider the difference $||\vec{x} \textbf{M}^t - \vec{\pi}||_2$:
+    \item Let $\vec{\pi}$ be a stationary distribution of $\textbf{M}$. We will show that $||\vec{x} \textbf{M}^t - \vec{\pi}||_2 \leq \sqrt{n} \lambda_2^t$ for any probability vector $\vec{x}$, where $\lambda_2$ is the second largest eigenvalue of $\textbf{M}$.
+    Consider the difference $\vec{x} \textbf{M}^t - \vec{\pi}$:
     \begin{align*}
-        \norm{\vec{x} \textbf{M}^t - \vec{\pi}}_2 &= \norm{\left(\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i\right) \textbf{M}^t - \vec{\pi}}_2 & \text{Expanding } \vec{x} \text{ in terms of eigenvectors} \\
-        &= \norm{\left(\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i\right) \textbf{M}^t - \vec{\pi} \textbf{M}^t}_2 & \text{Property of stationary distribution} \\
-        &= \norm{\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \vec{e}_i \textbf{M}^t - \vec{\pi} \textbf{M}^t}_2 & \text{Distributing } \textbf{M}^t \\
-        &= \norm{\sum_{i=1}^{n} \vec{x} \vec{e}_i^T \lambda_i^t \vec{e}_i - \vec{\pi}}_2 & \text{From Extra Credit 1} \\
+        \vec{x} \textbf{M}^t - \vec{\pi} &= \left(\sum_{i=1}^{n} \alpha_i \vec{e}_i\right) \textbf{M}^t - \vec{\pi} & \text{Expanding } \vec{x} \text{ in terms of eigenvectors} \\
+        &= \sum_{i=1}^{n} \alpha_i \lambda_i^t \vec{e}_i - \vec{\pi} & \text{Using result from part (a)} \\
+        &= \sum_{i=2}^{n} \alpha_i \lambda_i^t \vec{e}_i & \vec{\pi} = \alpha_1 \vec{e}_1 \text{ and } \lambda_1 = 1\\
+        \Rightarrow \norm{\vec{x} \textbf{M}^t - \vec{\pi}}_2^2 &= \norm{\sum_{i=2}^{n} \alpha_i \lambda_i^t \vec{e}_i}_2^2 \\
+        &= \sum_{i=2}^{n} \norm{\alpha_i \lambda_i^t \vec{e}_i}_2^2 & \text{Pythagorean theorem} \\
+        &= \sum_{i=2}^{n} \alpha_i^2 \lambda_i^{2t} & \vec{e}_i \text{ are unit vectors} \\
+        &\leq \lambda_2^{2t} \sum_{i=2}^{n} \alpha_i^2 & \text{Since } |\lambda_i| \leq \lambda_2 \text{ for } i \geq 2 \\
     \end{align*}
-    TODO: Unfinished
+    Now, we will bound the value of $\alpha_i$. Note that:
+    \begin{align*}
+        \alpha_i &= \vec{x} \vec{e}_i^T & \text{Definition of } \alpha_i \\
+        &\leq ||\vec{x}||_2 \cdot ||\vec{e}_i||_2 & \text{Cauchy-Schwarz inequality} \\
+        &\leq ||\vec{x}||_2 & \vec{e}_i \text{ are unit vectors} \\
+        &\leq \sum_{j=1}^{n} (x_j)^2 & \text{Definition of L2 norm} \\
+        &\leq \sum_{j=1}^{n} (x_j) & \text{Since } 0 \leq x_j \leq 1 \text{ for probability vectors} \\
+        &\leq 1
+    \end{align*}
+    Then:
+    \begin{align*}
+        \norm{\vec{x} \textbf{M}^t - \vec{\pi}}_2^2 &\leq \lambda_2^{2t} \sum_{i=2}^{n} ||\vec{x}||_2^2 & \text{Substituting the bound on } \alpha_i \\
+        &\leq \lambda_2^{2t} (n-1) ||\vec{x}||_2^2 & \text{There are } n-1 \text{ terms in the sum} \\
+        &\leq \lambda_2^{2t} n ||\vec{x}||_2^2 & \text{Simplification} \\
+        &\leq \lambda_2^{2t} n & \text{Since } ||\vec{x}||_2^2 \leq 1 \text{ for probability vectors} \\
+        \Rightarrow \norm{\vec{x} \textbf{M}^t - \vec{\pi}}_2 &\leq \sqrt{n} \lambda_2^t & \text{Taking the square root of both sides}
+    \end{align*}
+    Therefore, we have shown that $||\vec{x} \textbf{M}^t - \vec{\pi}||_2 \leq \sqrt{n} \lambda_2^t$ for any probability vector $\vec{x}$.
 \end{enumerate}
 \end{document}
