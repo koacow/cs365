@@ -31,6 +31,9 @@ class LinearRegression(object):
         # TODO: complete me!
         # This method should populate self.weights
 
+        A = np.hstack((X, np.ones((X.shape[0], 1))))
+        self.weights = np.linalg.pinv(A).dot(y_gt)
+
         # don't change the return type!
         return self
 
@@ -41,8 +44,9 @@ class LinearRegression(object):
         # TODO: complete me!
         # This method should use the self.weights
         # you set to make predictions on X!
-
-        return None
+        A = np.hstack((X, np.ones((X.shape[0], 1))))
+        y_pred = A.dot(self.weights)
+        return y_pred
 
 
 def test_1d(num_samples: int) -> Tuple[np.ndarray, np.ndarray]:
