@@ -1,194 +1,178 @@
 \documentclass[11pt]{article}
 
-%\usepackage{geometry}
-\usepackage[paper=a4paper, 
-            left=20.0mm, right=20.0mm, 
-            top=25.0mm, bottom=25.0mm]{geometry}
-\pagestyle{empty}
-\usepackage{graphicx}
-\usepackage{fancyhdr, lastpage, bbding, pmboxdraw}
-\usepackage[usenames,dvipsnames]{color}
-\definecolor{darkblue}{rgb}{0,0,.6}
-\definecolor{darkred}{rgb}{.7,0,0}
-\definecolor{darkgreen}{rgb}{0,.6,0}
-\definecolor{red}{rgb}{.98,0,0}
-\usepackage[colorlinks,pagebackref,pdfusetitle,urlcolor=darkblue,citecolor=darkblue,linkcolor=darkred,bookmarksnumbered,plainpages=false]{hyperref}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-
-\pagestyle{fancyplain}
-\fancyhf{}
-\lhead{ \fancyplain{}{Course Name} }
-%\chead{ \fancyplain{}{} }
-\rhead{ \fancyplain{}{\today} }
-%\rfoot{\fancyplain{}{page \thepage\ of \pageref{LastPage}}}
-\fancyfoot[RO, LE] {Page \thepage\ of \textcolor{black}{\pageref{LastPage}} }
-\thispagestyle{plain}
-
-%%%%%%%%%%%% LISTING %%%
-\usepackage{listings}
-\usepackage{caption}
-\usepackage{subcaption}
-\DeclareCaptionFont{white}{\color{white}}
-\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
-\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
-\usepackage{verbatim} % used to display code
-\usepackage{fancyvrb}
-\usepackage{acronym}
-\usepackage{amsthm, amsmath, amssymb}
-\usepackage{tikz}
-    \usetikzlibrary{calc, arrows, arrows.meta, positioning}
-
-\VerbatimFootnotes % Required, otherwise verbatim does not work in footnotes!
-
-\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
-\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
-\definecolor{lightlightgray}{gray}{0.93}
-
-\lstset{
-	%language=bash,                          % Code langugage
-	basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
-	keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
-	commentstyle=\color{gray},              % Comments font
-	numbers=left,                           % Line nums position
-	numberstyle=\tiny,                      % Line-numbers fonts
-	stepnumber=1,                           % Step between two line-numbers
-	numbersep=5pt,                          % How far are line-numbers from code
-	backgroundcolor=\color{lightlightgray}, % Choose background color
-	frame=none,                             % A frame around the code
-	tabsize=2,                              % Default tab size
-	captionpos=t,                           % Caption-position = bottom
-	breaklines=true,                        % Automatic line breaking?
-	breakatwhitespace=false,                % Automatic breaks only at whitespace?
-	showspaces=false,                       % Dont make spaces visible
-	showtabs=false,                         % Dont make tabls visible
-	columns=flexible,                       % Column format
-	morekeywords={__global__, __device__},  % CUDA specific keywords
-}
-
-\newcommand{\question}[1]{\section*{\normalsize #1}}
-% \newcommand{\mat}[1]{\begin{bmatrix}#1\end{bmatrix}}
-% \newcommand{\extraspace}[]{
-%     \begin{center}
-%         \textbf{Use this page for extra space.}
-%     \end{center}
-% }
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage[norelsize, linesnumbered, ruled, lined, boxed, commentsnumbered]{algorithm2e}
+\usepackage{fullpage}
 
 
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\pdfpagewidth 8.5in
+\pdfpageheight 11in 
 
+\topmargin 0in
+\oddsidemargin 0in
+\evensidemargin 0in
+
+\newtheorem*{claim}{Claim}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
 \begin{document}
+
 \begin{center}
-    {\Large \textsc{HW 4}}
+    \textbf{CS365 Written Assignment 4} \\
+    Khoa Cao \\
+    Due December 5, 2025
 \end{center}
-\begin{center}
-    Due: Friday 12/05/2025 @ 11:59pm EST
-\end{center}
 
-\section*{\textbf{Disclaimer}}
-I encourage you to work together, I am a firm believer that we are at our best (and learn better) when we communicate with our peers. Perspective is incredibly important when it comes to solving problems, and sometimes it takes talking to other humans (or rubber ducks in the case of programmers) to gain a perspective we normally would not be able to achieve on our own. The only thing I ask is that you report who you work with: this is \textbf{not} to punish anyone, but instead will help me figure out what topics I need to spend extra time on/who to help. When you turn in your solution (please use some form of typesetting: do \textbf{NOT} turn in handwritten solutions), please note who you worked with.
+\section*{Question 1}
 
+Consider the PageRank transform defined below, for ($0 \leq \alpha \leq 1$):
+\[
+	\textbf{M'} = \alpha \textbf{M} + (1 - \alpha) \frac{1}{|V|} \textbf{1}
+\]
+To augment this so that webpages containing a keyword $k$ are ranked higher, we can modify the transform to:
+\[
+	\mathbf{M'} = \alpha \mathbf{M} + (1 - \alpha) \mathbf{K}
+\]
+where $\mathbf{K}$ is a matrix defined as follows:
+\[
+\mathbf{K}_{ij} = \begin{cases}
+		\frac{2}{N_k + N} & \text{if } k \in v_j \\
+		\frac{1}{N_k + N} & \text{otherwise} \\
+\end{cases} \\
+\]
+where $N$ is the total number of webpages, and $N_k$ is the number of webpages containing keyword $k$.
 
+First, we will prove that $\mathbf{K}$ is a stochastic matrix:
+\begin{align*}
+	\sum_{i = 1}^{N} \mathbf{K}_{ij} &= \sum_{i: k \in v_j} \frac{2}{N_k + N} + \sum_{i: k \notin v_j} \frac{1}{N_k + N} & \text{definition of } \mathbf{K} \\
+	&= N_k \cdot \frac{2}{N_k + N} + (N - N_k) \cdot \frac{1}{N_k + N} & \text{definition of } N_k \\
+	&= \frac{2N_k + N - N_k}{N_k + N} & \text{algebra} \\
+	&= \frac{N_k + N}{N_k + N} = 1 & \text{algebra} \\
+	&\Rightarrow \mathbf{K} \text{ is stochastic} &
+\end{align*}
 
-
-
-
-\question{Question 1: Using Pagerank to Encode Other Properties}
-The pagerank transform is defined as follows (for $0\le \alpha\le 1$):
-$$\textbf{M}' = \alpha\textbf{M} + (1-\alpha)\frac{1}{|V|}\textbf{1}$$
-\\
-\noindent Where the uniform matrix $\frac{1}{|V|}\textbf{1}$ is used to guarantee that $\textbf{M}'$ is aperiodic and connected.\newline\newline
-\noindent The Pagerank transform is most famously used by Google as the backend of their search. However, Pagerank in its current form is not very useful to Google: it certainly ranks vertices (webpages) based on the connectivity of the internet, but often users want to find webpages that are important \textbf{and} contain the information they want: something the Pagerank transform is currently lacking.\newline\newline
-\noindent Your job is to augment the Pagerank transform so that webpages will be ranked based on the connectivity of the internet as well as whether a webpage contains a keyword $k$ that we are searching for. Your solution must rank webpages higher if keyword $k$ is present in that webpage than webpages that do not contain the keyword. For simplicity, assume that we can tell if vertex $v$ contains $k$ with the expression $k\in v$.\newline
-
-\noindent To be clear, you must do two things:
-\begin{enumerate}
-    \item Prove that your solution encodes the desired properties.
-    \item Prove that for vertices containing the keyword $k$, those vertices have higher rankings according to the stationary distribution than they did when the stationary distribution was calculated solely from the connectivity of the internet.
-\end{enumerate}
 \newpage
 
+\section*{Question 2}
+To use a binary classifier to perform multi-class classification, we can use a one-vs-rest approach.
+For each class $C_i$, define a indicator variable $y_i$:
+\[
+y_i = \begin{cases}
+		1 & \text{if } C_i \text{ is the correct class} \\
+		0 & \text{otherwise}
+	\end{cases}
+\]
+Then, we can train a binary classifier for each class $C_i$ using the indicator variable $y_i$ as the label.
+For $n$ classes, we train $n$ binary classifiers, one for each class $i$. Each binary classifier, $h_i$, will learn the probability
+\[
+Pr[y_i = 1 | X]
+\]
+To classify a new instance, we can run it through all $n$ classifiers and choose the class with the highest probability.
+This approach works for any number of classes because each binary classifier is independent of the others and we can train as many classifiers as needed.
 
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 2: From Binary Classification to Multi-class Classification}
-So far in class, we have talked about binary classification and completely ignored multi-class classification (i.e. when there are more than 2 classes). In this problem, you are to design a procedure for solving a multi-class classification problem but you are only allowed to use binary classification models to do so. To be clear, you are allowed to use as many binary \textit{classifiers} as you want, but the only models you are allowed to use are binary classification models.\newline
-
-\noindent To be clear, you must do two things:
-\begin{enumerate}
-    \item Prove that your solution can function for an arbitrary number of classes.
-    \item Answer any details like \textit{how} your solution trains/predicts using its binary classifiers.
-\end{enumerate}
 \newpage
 
+\section*{Question 3}
+Given the following class distribution:
 
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Question 3: Performance Metrics}
-Consider a dataset with the following label distribution:
-
-\begin{table}[!h]
+\begin{table}[h]
 \centering
 \begin{tabular}{|c|c|}
-    \hline
-    Class $c$ & $Pr[c]$\\
-    \hline
-    Red & 0.05\\
-    Blue & 0.87\\
-    Green & 0.08\\
-    \hline
+\hline
+Class $c$ & $Pr[c]$ \\
+\hline
+Red & 0.05 \\
+Blue & 0.87 \\
+Green & 0.08 \\
+\hline
 \end{tabular}
 \end{table}
 
-\noindent What metric(s) would you \textbf{avoid} when evaluating a model on a this dataset and why? You do \textbf{not} have to use a two-column proof structure for this question but I expect you to back up your answer with mathematical justification (e.g. formally define \textit{when} metric A is bad vs. good, etc.).
+To determine what metric we would avoid when evaluating a model on this dataset, we first formally define when a metric is bad.
+A metric is bad if it does not reflect the true performance of the model on the dataset, formally defined as follows:
+\begin{quote}
+	A metric $m$ is bad if there exists a model $M$ such that $m(M)$ is high, but the true performance of $M$ on the dataset is low.
+\end{quote}
+Using this definition, we can analyze common metrics used in multi-class classification:
+\begin{itemize}
+	\item \textbf{Accuracy}: This metric is bad for this dataset because a model that always predicts the majority class (Blue) will have an accuracy of 87\%, but will have poor performance on the minority classes (Red and Green).
+	\item \textbf{Precision, Recall, F1-Score}: These metrics are not bad for this dataset because they take into account the performance on each class individually and penalize models that perform poorly on minority classes.
+\end{itemize}
+Therefore, the metric we would avoid when evaluating a model on this dataset is \textbf{Accuracy}.
+
 \newpage
 
+\section*{Question 4}
 
+% Find maximum k-core of a graph
 
+This problem is analogous to finding the maximum $k$ such that the $k$-core of a graph is non-empty.
+We can use the following algorithm to find the maximum $k$-core of a graph:
 
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwIn{Graph $G = (V, E)$ as adjacency list $adj$}
+\KwOut{Maximum $k$-core of $G$}
+$k \leftarrow 0$\;
+$deg \gets \{\}$\;
+\For{each vertex $v \in V$}{
+	$deg[v] \leftarrow degree(v)$\;
+}
+$max\_deg \leftarrow$ maximum degree in $deg$\;
+$res \gets \emptyset$\;
+\For{$k \leftarrow 0$ \KwTo $max\_deg$}{
+	$adj' \leftarrow adj$\;
+	$deg' \leftarrow deg$\;
+	\While{$adj \ne \emptyset$}{
+		$removed \leftarrow false$\;
+		\For{each vertex $v$ in $adj$}{
+			\If{$deg'[v] < k$}{
+				\For{$u \in adj[v]$}{
+					$deg'[u] \leftarrow deg'[u] - 1$\;
+				}
+				remove $v$ from $adj'$\;
+				$removed \leftarrow true$\;
+			}
+		}
+		\If{$!removed$}{
+			break\;
+		}
+	}
+	\If{$adj' \ne \emptyset$}{
+		$res \leftarrow adj'$\;
+	}
+}
+\caption{Find Maximum $k$-core of a Graph}
+\Return{$res$}\;
+\end{algorithm}
 
+\begin{claim}
+The algorithm above runs in $O(|V| \cdot (|V| + |E|))$ time.
+\end{claim}
+\begin{proof}
+	The algorithm has an outer loop that runs at most $max\_deg$ times, which is at most $|V| - 1$.
+	Inside the outer loop, there is a while loop removes vertices with degree less than $k$ until no more verticies can be removed.
+	This loop iterates over all vertices and edges in the graph, taking $O(|V| + |E|)$ time.
+	Thus, the total time complexity of the algorithm is $O(|V| \cdot (|V| + |E|))$. In a 
+	connected graph, $|E| \geq |V| - 1$, so the time complexity can be simplified to $O(|V| \cdot |E|)$.
+\end{proof}
 
-
-
-
-
-
-
-
-
-
-
-
-
-\question{Extra Credit: Max-miniumum Degree Problem (25 points)}
-Consider an undirected, unweighted graph $G=(V,E)$. For any subset of vertices $X\subseteq V$, the graph \textit{induced} by $X$, denoted $G_X = (X, E_X)$ is the graph containing vertex $X$ as well as the subset of edges $E_X\subseteq E$ that have \textit{both} of their endpoints in $X$ (i.e. $G_X$ is what remains of $G$ if we delete vertices not in $X$ as well as any edge with either one or both of its endpoints not in $X$). For brevity, let us denote $deg(v, G)$ as the degree of vertex $v$ in some graph $G$.\newline
-
-\noindent Given $G=(V,E)$, find $S\subseteq V$ such that
-$$\min\limits_{v\in S} deg(v, G_S)$$
-is maximized.\newline
-
-\noindent To be clear, you are to design a polynomial time algorithm which solves this problem \textit{optimally}. You are to prove the running time of your algorithm is polynomial time as well as prove that your algorithm is optimal.
-
+\begin{claim}
+	The algorithm above correctly finds the maximum $k$-core of a graph.
+\end{claim}
+\begin{proof}
+	By definition, a $k$-core is a maximal subgraph in which every vertex has degree at least $k$.
+	Therefore, in a $k$-core,
+	\[
+		\min_{v in G_k} deg(v, G_k) \geq k
+	\]
+	The algorithm iteratively removes vertices with degree less than $k$ until no more vertices can be removed.
+	At this point, the remaining graph is a $k$-core.
+	We increment $k$ until $k = max\_deg$. Since the maximum degree of a subgraph cannot exceed the maximum degree of the original graph,
+	the last non-empty subgraph found is the maximum $k$-core of the graph.
+\end{proof}
 \end{document}
-
